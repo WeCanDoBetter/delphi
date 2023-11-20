@@ -1,0 +1,96 @@
+# 🏛️ Delphi
+
+Delphi is a versatile and adaptable conversational agent framework that
+streamlines the creation and management of chatbots and AI-driven communication
+systems. Its design prioritizes abstraction and provider-independence, allowing
+for seamless integration with various message providers. Delphi is compatible
+with a range of environments, including browsers, Node.js, and Deno, making it
+an ideal choice for diverse application scenarios.
+
+## 🚀 Features
+
+- 🤖 **Provider-Independent Messaging:** Delphi abstracts the messaging
+  function, allowing seamless integration with various providers like OpenAI and
+  Azure OpenAI.
+- 🔄 **Flexible Conversational Flow:** Manages complex conversation patterns
+  with ease, facilitating intelligent and context-aware interactions.
+- 🛠️ **Customizable Agent Options:** Tailor your agent with configurable settings
+  such as maximum rounds and specific model preferences.
+- 🌍 **Cross-Platform Compatibility:** Works effortlessly in browsers, Node.js,
+  and Deno environments.
+- 📚 **Context Management:** Efficiently maintains conversation states,
+  enhancing the continuity and relevance of interactions.
+- 📝 **Robust Schema Validation:** Ensures the integrity and correctness of data
+  with JSON schema validation.
+- 🎛️ **Modular Design:** Facilitates easy integration and scalability through a
+  clear and modular code structure.
+
+## 📌 Requirements
+
+- Node.js (v18 or newer), a modern browser, or Deno
+- TypeScript
+- An account with a supported message provider (e.g., Azure, OpenAI)
+
+## 🛠️ Installation
+
+Delphi is available on npm and can be easily installed:
+
+```bash
+npm install @wecandobetter/delphi
+```
+
+## 🚀 Getting Started
+
+To quickly get started with Delphi:
+
+1. **Import Delphi:** Import the necessary components from Delphi in your
+   project.
+   ```typescript
+   import { Agent, Context } from "@wecandobetter/delphi";
+   ```
+
+2. **Create an Agent:** Instantiate an `Agent` with your desired configuration.
+   ```typescript
+   const agent = new Agent("myAgent" /* ... configuration ... */);
+   ```
+
+3. **Initialize Context:** Set up a `Context` to manage the conversation state.
+   ```typescript
+   const context = new Context();
+
+   context.addMessage({
+     role: "system",
+     content: "You are a helpful assistant!",
+   });
+   ```
+
+4. **Run the Agent:** Start the agent with the initialized context.
+   ```typescript
+   const message = await agent.run(context);
+   console.log(message.content);
+   ```
+
+This example gives you a basic setup for initiating a conversation with Delphi.
+For more detailed usage and advanced features, refer to the documentation.
+
+## 📖 Documentation
+
+Visit our [Documentation Page](./docs) for information on API usage and advanced
+features.
+
+## 🤝 Contributing
+
+Contributions are welcome! Create an issue, open a pull request, or reach out to
+us in the discussions section.
+
+## 📜 License
+
+Delphi is released under the MIT License. See the [LICENSE](LICENSE) file for
+more details.
+
+## ✉️ Contact
+
+Reach out to us at [contact@wcdb.life](mailto:contact@wcdb.life) for support or
+inquiries.
+
+Happy coding! 🎉
