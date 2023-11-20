@@ -98,18 +98,13 @@ const searchFn = new AgentFunction<
 );
 ```
 
-Next we define the input and output types for the intro function. The input is
-validated using a JSON schema. The output is the introduction of the article.
+Next we define the input type for the intro function. The input is validated
+using a JSON schema. The output is the introduction of the article.
 
 ```ts
 interface IntroParameters {
   /** The title of the article. */
   title: string;
-}
-
-interface IntroResult {
-  /** The introduction of the article. */
-  content: string;
 }
 
 const introSchema: JSONSchemaType<IntroParameters> = {
@@ -129,16 +124,16 @@ Then we define the intro function. The function uses the `wikipedia` package to
 get the introduction of the given article. It returns the introduction.
 
 ```ts
-const introFn = new AgentFunction<IntroParameters, IntroResult>(
+const introFn = new AgentFunction<IntroParameters, string>(
   "intro",
   "Get the introduction of a Wikipedia article",
   introSchema,
   async ({ title }) => {
     // Get the introduction of the article
-    const content = await wikipedia.intro(title);
+    const intro = await wikipedia.intro(title);
 
     // Return the introduction
-    return { content };
+    return intro;
   },
 );
 ```
@@ -176,7 +171,7 @@ const context = new Context();
 context.addMessage({
   role: "system",
   content:
-    "Search Wikipedia for a random scientific subject and tell me about it.",
+    "Search Wikipedia for a random scientific subject and tell the user about it.",
 });
 
 // Set and enable the functions
