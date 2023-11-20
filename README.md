@@ -75,6 +75,10 @@ For more detailed usage and advanced features, refer to the documentation.
 
 ## 📖 Documentation
 
+- [Agent Functions](./docs/agent_functions.md)
+- [Function Calling](./docs/function_calling.md)
+- [Example](./docs/example.md)
+
 Visit our [Documentation Page](./docs) for information on API usage and advanced
 features.
 
@@ -93,4 +97,4 @@ more details.
 Reach out to us at [contact@wcdb.life](mailto:contact@wcdb.life) for support or
 inquiries.
 
-Happy coding! 🎉
+Happy conversing! 🎉

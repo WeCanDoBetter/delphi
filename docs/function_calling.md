@@ -51,6 +51,21 @@ an overview of how function calling works in Delphi:
 Here's a simple example of how you might use a function within a Delphi agent:
 
 ```typescript
+import { AgentFunction, type JSONSchemaType } from "@wecandobetter/delphi";
+
+const weatherSchema: JSONSchemaType<WeatherParameters> = {
+  type: "object",
+  properties: {
+    location: {
+      type: "string",
+      description:
+        "The location to fetch weather information for (e.g. 'New York, NY').",
+    },
+  },
+  required: ["location"],
+  additionalProperties: false,
+};
+
 // Define a custom function
 const fetchWeatherInfo = new AgentFunction(
   "getWeather",
@@ -66,7 +81,7 @@ const fetchWeatherInfo = new AgentFunction(
 context.addFunction(fetchWeatherInfo);
 context.functions.enable(fetchWeatherInfo.name);
 
-// During conversation, this function can be called based on user input or other triggers
+// During conversation, this function can be called based on user input
 ```
 
 This function calling mechanism enhances Delphi's flexibility, allowing for

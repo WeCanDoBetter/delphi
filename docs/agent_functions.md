@@ -36,7 +36,10 @@ interface ExampleInput {
 const exampleInputSchema: JSONSchemaType<ExampleInput> = {
   type: "object",
   properties: {
-    query: { type: "string" },
+    query: {
+      type: "string",
+      description: "The query to search for.",
+    },
   },
   required: ["query"],
 };
