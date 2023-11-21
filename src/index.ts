@@ -1,7 +1,7 @@
 export type {
+  BaseClientOptions,
   ChatMessage,
   FunctionDefinition,
-  GetChatCompletionsOptions,
 } from "./types";
 
 export { Agent, type AgentOptions, type ClientFunction } from "./Agent";

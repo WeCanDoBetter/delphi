@@ -1,10 +1,17 @@
-import type { ChatMessage, GetChatCompletionsOptions } from "./types";
-import { Context } from "./Context";
+import type { BaseClientOptions, ChatMessage } from "./types";
+import type { Context } from "./Context";
 
-interface ClientOptions extends GetChatCompletionsOptions {
+interface ClientOptions extends BaseClientOptions {
+  /** The model to use. */
   model: string;
 }
 
+/**
+ * A client function. This is used to run the agent.
+ * @param messages The messages to run the agent with.
+ * @param options The options to run the agent with.
+ * @returns The result of the agent.
+ */
 export type ClientFunction = (
   messages: ChatMessage[],
   options: ClientOptions,

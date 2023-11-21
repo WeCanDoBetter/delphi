@@ -5,9 +5,9 @@ the Delphi framework for creating conversational agents.
 
 ## Interfaces and Types
 
-### `GetChatCompletionsOptions`
+### `BaseClientOptions`
 
-Options for configuring chat completions.
+Base configuration options for a client.
 
 | Property                | Type                     | Description                                                                               |
 | ----------------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
@@ -19,17 +19,15 @@ Options for configuring chat completions.
 | `stop`                  | `string[]`               | Textual sequences that will end completions generation.                                   |
 | `presencePenalty`       | `number`                 | Influences token probability based on their presence in generated text.                   |
 | `frequencyPenalty`      | `number`                 | Influences token probability based on their cumulative frequency.                         |
-| `stream`                | `boolean`                | Indicates if chat completions should be streamed.                                         |
-| `model`                 | `string`                 | Model name for the completions request (also for Azure OpenAI).                           |
 | `azureExtensionOptions` | `AzureExtensionsOptions` | Configuration for Azure OpenAI chat extensions.                                           |
 
 ### `ClientOptions`
 
-Extends `GetChatCompletionsOptions` with an additional `model` field.
+Extends `BaseClientOptions` with an additional `model` field.
 
-| Property | Type     | Description          |
-| -------- | -------- | -------------------- |
-| `model`  | `string` | Name of the AI model |
+| Property | Type     | Description                                       |
+| -------- | -------- | ------------------------------------------------- |
+| `model`  | `string` | Name of the AI model (for both Azure and OpenAI). |
 
 ### `ClientFunction`
 
