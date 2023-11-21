@@ -63,8 +63,8 @@ context and enable it.
 ```typescript
 const context = new Context();
 
-context.addFunction(exampleFunction);
-context.functions.enable(exampleFunction.name);
+// set the second argument to true to enable the function
+context.addFunction(exampleFunction, true);
 ```
 
 ## Conclusion

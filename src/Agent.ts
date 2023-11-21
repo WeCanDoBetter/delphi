@@ -23,7 +23,7 @@ export interface AgentOptions {
   /** The description of the agent. */
   description?: string;
   /** The client options. */
-  client: ClientOptions;
+  client: Omit<ClientOptions, "functionCall" | "functions">;
 }
 
 /** The default agent options. */
@@ -74,57 +74,82 @@ export class Agent extends EventTarget {
    */
   async run(context: Context, round = 1): Promise<ChatMessage> {
     const { messages, functions } = context.build();
-    const { model } = this.options.client;
-    const isLastRound = round === this.options.maxRounds!;
+    const isLastRound = round >= (this.options.maxRounds ?? 5);
 
     const message = await this.#client(messages, {
-      model,
-      functionCall: isLastRound ? "none" : functions.length ? "auto" : "none",
-      functions: isLastRound ? functions : undefined,
+      ...this.options.client,
+      functionCall: isLastRound || !functions.length ? "none" : "auto",
+      functions: isLastRound || !functions.length ? undefined : functions,
     });
 
-    const { functionCall } = message;
-
+    // Add the message to the context
     context.addMessage(message);
 
-    if (functionCall) {
-      const fn = context.functions.get(functionCall.name);
-
-      if (!fn) {
-        throw new Error(`Function "${functionCall.name}" does not exist.`);
-      } else if (!context.functions.enabled.includes(functionCall.name)) {
-        throw new Error(`Function "${functionCall.name}" is not enabled.`);
-      }
-
-      let args: unknown;
-
-      try {
-        args = JSON.parse(functionCall.arguments);
-      } catch (error: any) {
-        throw new AggregateError(
-          [error],
-          "Failed to parse function arguments.",
-        );
-      }
-
-      let value: unknown;
-
-      try {
-        value = await fn.run(args);
-      } catch (error: any) {
-        throw new AggregateError([error], "Failed to run function.");
-      }
-
-      context.addMessage({
-        role: "function",
-        name: functionCall.name,
-        content: typeof value === "string" ? value : JSON.stringify(value),
-      });
-
-      // Run the agent again with the updated context
-      return this.run(context, round++);
+    // Process the function call
+    if (await this.#processFunctionCall(context, message)) {
+      // Run the agent again
+      return this.run(context, round + 1);
     }
 
     return message;
+  }
+
+  /**
+   * Process a function call. This will run the function and add the result to
+   * the context.
+   * @param context The context to process the function call with.
+   * @param message The message to process the function call with.
+   * @returns Whether the function call was processed. If so, the agent should
+   * be called again, so it can process the function result. If not, message
+   * is not a function call.
+   * @throws {Error} If the function does not exist or is not enabled.
+   * @throws {AggregateError} If the function arguments are invalid or the
+   * function throws an error.
+   */
+  async #processFunctionCall(
+    context: Context,
+    message: ChatMessage,
+  ): Promise<boolean> {
+    const { functionCall } = message;
+
+    if (!functionCall) {
+      return false;
+    }
+
+    const fn = context.functions.get(functionCall.name);
+
+    if (!fn) {
+      throw new Error(`Function "${functionCall.name}" does not exist.`);
+    } else if (!context.functions.isEnabled(functionCall.name)) {
+      throw new Error(`Function "${functionCall.name}" is not enabled.`);
+    }
+
+    let args: unknown;
+
+    try {
+      args = JSON.parse(functionCall.arguments);
+    } catch (error: any) {
+      throw new AggregateError(
+        [error],
+        "Failed to parse function arguments.",
+      );
+    }
+
+    let value: unknown;
+
+    try {
+      value = await fn.run(args);
+    } catch (error: any) {
+      throw new AggregateError([error], "Failed to run function.");
+    }
+
+    // Add the function result to the context
+    context.addMessage({
+      role: "function",
+      name: functionCall.name,
+      content: typeof value === "string" ? value : JSON.stringify(value),
+    });
+
+    return true;
   }
 }

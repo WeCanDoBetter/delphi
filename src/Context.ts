@@ -20,9 +20,12 @@ export class Context {
   #messages: ChatMessage[];
   #functions: FunctionMap;
 
-  constructor(messages: ChatMessage[] = [], functions = new FunctionMap()) {
+  constructor(
+    messages: ChatMessage[] = [],
+    functions?: Iterable<AgentFunction<any, any>>,
+  ) {
     this.#messages = messages;
-    this.#functions = functions;
+    this.#functions = new FunctionMap(functions);
   }
 
   /**
@@ -50,19 +53,15 @@ export class Context {
   /**
    * Add a function to the context.
    * @param fn The function to add.
-   * @param enable Whether to enable the function (default: `true`).
+   * @param enabled Whether to enable the function (default: `true`).
    * @throws {Error} If a function with the same name already exists.
    */
-  addFunction<Input, Output>(fn: AgentFunction<Input, Output>, enable = true) {
+  addFunction<Input, Output>(fn: AgentFunction<Input, Output>, enabled = true) {
     if (this.#functions.has(fn.name)) {
       throw new Error(`Function "${fn.name}" already exists.`);
     }
 
-    this.#functions.set(fn.name, fn);
-
-    if (enable) {
-      this.#functions.enable(fn.name);
-    }
+    this.#functions.addFunction(fn, enabled);
   }
 
   /**
@@ -81,6 +80,6 @@ export class Context {
    * @returns A duplicate of the context.
    */
   duplicate(): Context {
-    return new Context([...this.#messages], this.#functions);
+    return new Context([...this.#messages], this.#functions.values());
   }
 }

@@ -21,7 +21,7 @@ an overview of how function calling works in Delphi:
 
   ```typescript
   const myFunction = new AgentFunction(/* ... configuration ... */);
-  context.addFunction(myFunction);
+  context.addFunction(myFunction, false); // second argument is whether to enable immediately
   ```
 
 ### Enabling Functions
@@ -78,8 +78,7 @@ const fetchWeatherInfo = new AgentFunction(
 );
 
 // Register and enable the function
-context.addFunction(fetchWeatherInfo);
-context.functions.enable(fetchWeatherInfo.name);
+context.addFunction(fetchWeatherInfo, true);
 
 // During conversation, this function can be called based on user input
 ```

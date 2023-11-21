@@ -1,6 +1,23 @@
-import Ajv, { type AsyncValidateFunction, type JSONSchemaType } from "ajv";
+import Ajv, {
+  type AsyncValidateFunction,
+  type ErrorObject,
+  type JSONSchemaType,
+} from "ajv";
 
 const ajv = new Ajv();
+
+/**
+ * A validation error which contains the validation errors.
+ */
+export class ValidationError extends Error {
+  /** The validation errors. */
+  readonly errors: ReadonlyArray<ErrorObject>;
+
+  constructor(errors: ErrorObject[], message = "Invalid input.") {
+    super(message);
+    this.errors = errors;
+  }
+}
 
 /**
  * An agent function. This is a function that can be called by the agent.
@@ -54,12 +71,7 @@ export class AgentFunction<Input, Output> {
     const result = await this.#validate(value);
 
     if (!result) {
-      throw new AggregateError(
-        this.#validate.errors ?? [
-          new Error("Unknown error."),
-        ],
-        "Invalid input.",
-      );
+      throw new ValidationError(this.#validate.errors ?? []);
     }
 
     return result;

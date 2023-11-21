@@ -14,6 +14,7 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
     if (functions) {
       for (const fn of functions) {
         this.set(fn.name, fn);
+        this.#enabled.push(fn.name);
       }
     }
   }
@@ -26,6 +27,25 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
   }
 
   /**
+   * Add a function. If the function is enabled, it will be added to the list of
+   * enabled functions.
+   * @param fn The function to add.
+   * @param enabled Whether to enable the function (default: `true`).
+   * @throws {Error} If a function with the same name already exists.
+   */
+  addFunction<Input, Output>(fn: AgentFunction<Input, Output>, enabled = true) {
+    if (this.has(fn.name)) {
+      throw new Error(`Function "${fn.name}" already exists.`);
+    }
+
+    this.set(fn.name, fn);
+
+    if (enabled) {
+      this.#enabled.push(fn.name);
+    }
+  }
+
+  /**
    * Enable a function.
    * @param name The name of the function to enable.
    */
@@ -35,6 +55,19 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
     } else if (!this.#enabled.includes(name)) {
       this.#enabled.push(name);
     }
+  }
+
+  /**
+   * Check if a function is enabled.
+   * @param name The name of the function to check.
+   * @throws {Error} If the function does not exist.
+   */
+  isEnabled(name: string) {
+    if (!this.has(name)) {
+      throw new Error(`Function "${name}" does not exist.`);
+    }
+
+    return this.#enabled.includes(name);
   }
 
   /**
