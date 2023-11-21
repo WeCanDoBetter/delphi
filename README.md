@@ -11,6 +11,9 @@ an ideal choice for diverse application scenarios.
 
 - 🤖 **Provider-Independent:** Delphi abstracts the messaging function, allowing
   seamless integration with various providers like OpenAI and Azure OpenAI.
+- 📞 **Function Calling:** The agent can call functions to perform tasks such as
+  querying a database or making an API call, and incorporate the results into
+  the conversation.
 - 🔄 **Flexible Conversational Flow:** Manages complex conversation patterns
   with ease, facilitating intelligent and context-aware interactions.
 - 🛠️ **Customizable Agent Options:** Tailor your agent with configurable settings
