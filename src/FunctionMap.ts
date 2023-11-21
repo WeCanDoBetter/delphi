@@ -1,5 +1,5 @@
 import type { FunctionDefinition } from "./types";
-import type { AgentFunction } from "./AgentFunction";
+import { AgentFunction } from "./AgentFunction";
 
 /**
  * A function map. This is used to store functions that can be called by the
@@ -46,6 +46,24 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
 
     if (enabled) {
       this.#enabled.push(fn.name);
+    }
+  }
+
+  /**
+   * Add multiple functions.
+   * @param fns The functions to add.
+   */
+  addFunctions(
+    ...fns:
+      (AgentFunction<any, any> | {
+        fn: AgentFunction<any, any>;
+        enabled?: boolean;
+      })[]
+  ) {
+    for (const fn of fns) {
+      const actualFn = fn instanceof AgentFunction ? fn : fn.fn;
+      const enabled = fn instanceof AgentFunction ? true : fn.enabled ?? true;
+      this.addFunction(actualFn, enabled);
     }
   }
 

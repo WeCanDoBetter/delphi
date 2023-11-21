@@ -27,6 +27,34 @@ Initializes a new instance of `FunctionMap`.
 
 ### Methods
 
+#### `addFunction`
+
+Adds a function to the map.
+
+```typescript
+addFunction(fn: AgentFunction<any, any>): void
+```
+
+| Parameter | Type                      | Description          |
+| --------- | ------------------------- | -------------------- |
+| `fn`      | `AgentFunction<any, any>` | The function to add. |
+
+_Throws_: `Error` if the function already exists in the map.
+
+#### `addFunctions`
+
+Adds multiple functions to the map.
+
+```typescript
+addFunctions(...fns: (AgentFunction<any, any> | { fn: AgentFunction<any, any>, enabled?: boolean })[]): void
+```
+
+| Parameter | Type                                                                                | Description                                                                                  |
+| --------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `fns`     | `(AgentFunction<any, any> \| { fn: AgentFunction<any, any>, enabled?: boolean })[]` | An array of `AgentFunction` instances or objects containing a function and an optional flag. |
+
+_Throws_: `Error` if any of the functions already exist in the map.
+
 #### `enable`
 
 Enables a function in the map by its name or function instance.
@@ -94,7 +122,7 @@ const functionMap = new FunctionMap();
 
 // Adding functions
 const myFunction = new AgentFunction(/* ... */);
-functionMap.add(myFunction);
+functionMap.addFunction(myFunction);
 
 // Enabling and disabling functions
 functionMap.enable(myFunction);
