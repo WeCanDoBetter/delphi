@@ -18,11 +18,7 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
 
     if (functions) {
       for (const fn of functions) {
-        this.set(fn.name, fn);
-
-        if (enable) {
-          this.#enabled.push(fn.name);
-        }
+        this.addFunction(fn, enable);
       }
     }
   }
