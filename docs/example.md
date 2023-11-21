@@ -27,17 +27,13 @@ import wikipedia from "wikipedia";
 ## The `search` Function
 
 First we define the input and output types for the search function. The input is
-validated using a JSON schema. The output is a list of search results and an
+validated using the JSON schema. The output is a list of search results and an
 optional suggestion.
 
 ```ts
 interface SearchParameters {
   /** The query to search for. */
   query: string;
-  /** The maximum number of results to return. */
-  limit?: number;
-  /** Whether to return a suggestion if there are no results. */
-  suggestion?: boolean;
 }
 
 interface SearchResult {
@@ -54,16 +50,6 @@ const searchSchema: JSONSchemaType<SearchParameters> = {
     query: {
       type: "string",
       description: "The query to search for.",
-    },
-    limit: {
-      type: "number",
-      nullable: true,
-      description: "Maximum number of results to return (default: 5).",
-    },
-    suggestion: {
-      type: "boolean",
-      nullable: true,
-      description: "Return a suggestion if there are no results.",
     },
   },
   required: ["query"],
@@ -84,11 +70,14 @@ const searchFn = new AgentFunction<
   "search",
   "Search on Wikipedia",
   searchSchema,
-  async ({ query, limit = 5, suggestion = true }) => {
+  async ({ query }) => {
     // Search on Wikipedia
-    const { results, suggestion: sugg } = await wikipedia.search(
+    const { results, suggestion } = await wikipedia.search(
       query,
-      { limit, suggestion },
+      {
+        limit: 5, // limit to 5 results
+        suggestion: true, // include a suggestion
+      },
     );
 
     // Return the results and suggestion
@@ -103,7 +92,7 @@ const searchFn = new AgentFunction<
 ## The `intro` Function
 
 Next we define the input type for the intro function. The input is validated
-using a JSON schema. The output is the introduction of the article.
+using the JSON schema.
 
 ```ts
 interface IntroParameters {
@@ -125,7 +114,8 @@ const introSchema: JSONSchemaType<IntroParameters> = {
 ```
 
 Then we define the intro function. The function uses the `wikipedia` package to
-get the introduction of the given article. It returns the introduction.
+get the introduction of the given article. It returns the introduction as a
+string.
 
 ```ts
 const introFn = new AgentFunction<IntroParameters, string>(
@@ -145,8 +135,8 @@ const introFn = new AgentFunction<IntroParameters, string>(
 ## The Agent
 
 Finally, we create the agent. The agent uses the OpenAI API to generate
-responses. The agent's context is configured to use the `search` and `intro`
-functions.
+responses. The agent is configured to use the `gpt-4-1106-preview` model, which
+supports function calls.
 
 ```ts
 // Create an OpenAI client
@@ -190,11 +180,8 @@ context.addMessage({
 });
 
 // Set and enable the functions
-context.addFunction(searchFn);
-context.functions.enable(searchFn.name);
-
-context.addFunction(introFn);
-context.functions.enable(introFn.name);
+context.addFunction(searchFn, true);
+context.addFunction(introFn, true);
 ```
 
 Now we can run the agent with the context. The agent will use the functions
@@ -203,7 +190,7 @@ defined in the context to process the messages.
 ```ts
 // run the agent with the function included in the context
 const result = await agent.run(context);
-console.log(result.content);
+console.log(result.content); // "Quantum mechanics is a..."
 ```
 
 This shows how you can use functions to enhance your agent's capabilities.
