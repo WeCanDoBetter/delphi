@@ -9,19 +9,16 @@ an ideal choice for diverse application scenarios.
 
 ## 🚀 Features
 
-- 🤖 **Provider-Independent Messaging:** Delphi abstracts the messaging
-  function, allowing seamless integration with various providers like OpenAI and
-  Azure OpenAI.
+- 🤖 **Provider-Independent:** Delphi abstracts the messaging function, allowing
+  seamless integration with various providers like OpenAI and Azure OpenAI.
 - 🔄 **Flexible Conversational Flow:** Manages complex conversation patterns
   with ease, facilitating intelligent and context-aware interactions.
 - 🛠️ **Customizable Agent Options:** Tailor your agent with configurable settings
   such as maximum rounds and specific model preferences.
 - 🌍 **Cross-Platform Compatibility:** Works effortlessly in browsers, Node.js,
   and Deno environments.
-- 📚 **Context Management:** Efficiently maintains conversation states,
-  enhancing the continuity and relevance of interactions.
-- 📝 **Robust Schema Validation:** Ensures the integrity and correctness of data
-  with JSON schema validation.
+- 📝 **Schema Validation:** Ensures the integrity and correctness of data with
+  JSON schema validation.
 - 🎛️ **Modular Design:** Facilitates easy integration and scalability through a
   clear and modular code structure.
 
@@ -62,12 +59,17 @@ To quickly get started with Delphi:
      role: "system",
      content: "You are a helpful assistant!",
    });
+
+   context.addMessage({
+     role: "user",
+     content: "Hello, I need help.",
+   });
    ```
 
 4. **Run the Agent:** Start the agent with the initialized context.
    ```typescript
    const message = await agent.run(context);
-   console.log(message.content);
+   console.log(message.content); // "Sure! How can I help?"
    ```
 
 This example gives you a basic setup for initiating a conversation with Delphi.
@@ -77,9 +79,10 @@ For more detailed usage and advanced features, refer to the documentation.
 
 - [Agent Functions](./docs/agent_functions.md)
 - [Function Calling](./docs/function_calling.md)
-- [Example](./docs/example.md)
+- [Example: Wikipedia](./docs/example.md)
+- [API Reference](./docs/api/README.md)
 
-Visit our [Documentation Page](./docs) for information on API usage and advanced
+Visit the [documentation](./docs) for information on API usage and advanced
 features.
 
 ## 🤝 Contributing

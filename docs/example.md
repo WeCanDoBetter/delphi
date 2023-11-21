@@ -24,6 +24,8 @@ import {
 import wikipedia from "wikipedia";
 ```
 
+## The `search` Function
+
 First we define the input and output types for the search function. The input is
 validated using a JSON schema. The output is a list of search results and an
 optional suggestion.
@@ -56,7 +58,7 @@ const searchSchema: JSONSchemaType<SearchParameters> = {
     limit: {
       type: "number",
       nullable: true,
-      description: "Mximum number of results to return (default: 5).",
+      description: "Maximum number of results to return (default: 5).",
     },
     suggestion: {
       type: "boolean",
@@ -98,6 +100,8 @@ const searchFn = new AgentFunction<
 );
 ```
 
+## The `intro` Function
+
 Next we define the input type for the intro function. The input is validated
 using a JSON schema. The output is the introduction of the article.
 
@@ -138,6 +142,8 @@ const introFn = new AgentFunction<IntroParameters, string>(
 );
 ```
 
+## The Agent
+
 Finally, we create the agent. The agent uses the OpenAI API to generate
 responses. The agent's context is configured to use the `search` and `intro`
 functions.
@@ -163,7 +169,14 @@ const agent = new Agent(
     },
   },
 );
+```
 
+## Running the Agent
+
+Now we can create a context and run the agent. The agent will use the functions
+defined in the context to process the messages.
+
+```ts
 // Create a context
 const context = new Context();
 
@@ -171,7 +184,9 @@ const context = new Context();
 context.addMessage({
   role: "system",
   content:
-    "Search Wikipedia for a random scientific subject and tell the user about it.",
+    "Search Wikipedia for a random scientific subject and tell the user about it. " +
+    "Use the `search` function to search Wikipedia and the `intro` function to get the introduction of an article. " +
+    "Then use the introduction to tell the user about the subject.",
 });
 
 // Set and enable the functions
