@@ -87,7 +87,7 @@ describe("FunctionMap", () => {
   // Test build method
   it("should build function definitions for enabled functions", () => {
     const functionMap = new FunctionMap([mockFunction1, mockFunction2]);
-    functionMap.disable("func1");
+    functionMap.enable("func2");
     const definitions = functionMap.build();
     expect(definitions.length).toBe(1);
     expect(definitions[0].name).toBe("func2");
