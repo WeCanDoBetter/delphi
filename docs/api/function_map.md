@@ -1,4 +1,4 @@
-# Delphi FunctionMap API Reference
+# Delphi API Reference > Function Map
 
 The `FunctionMap` class in the Delphi framework is a specialized map used to
 store and manage functions callable by an agent. Below is a detailed API
@@ -29,15 +29,17 @@ Initializes a new instance of `FunctionMap`.
 
 #### `enable`
 
-Enables a function in the map by its name.
+Enables a function in the map by its name or function instance.
 
 ```typescript
 enable(name: string): void
+enable(fn: AgentFunction<any, any>): void
 ```
 
-| Parameter | Type     | Description                         |
-| --------- | -------- | ----------------------------------- |
-| `name`    | `string` | The name of the function to enable. |
+| Parameter | Type                      | Description               |
+| --------- | ------------------------- | ------------------------- |
+| `name`    | `string`                  | The name of the function. |
+| `fn`      | `AgentFunction<any, any>` | The function to enable.   |
 
 _Throws_: `Error` if the function does not exist.
 
@@ -55,11 +57,13 @@ Disables a function in the map by its name.
 
 ```typescript
 disable(name: string): void
+disable(fn: AgentFunction<any, any>): void
 ```
 
-| Parameter | Type     | Description                          |
-| --------- | -------- | ------------------------------------ |
-| `name`    | `string` | The name of the function to disable. |
+| Parameter | Type                      | Description               |
+| --------- | ------------------------- | ------------------------- |
+| `name`    | `string`                  | The name of the function. |
+| `fn`      | `AgentFunction<any, any>` | The function to disable.  |
 
 _Throws_: `Error` if the function does not exist.
 
@@ -90,10 +94,10 @@ const functionMap = new FunctionMap();
 
 // Adding functions
 const myFunction = new AgentFunction(/* ... */);
-functionMap.set(myFunction.name, myFunction);
+functionMap.add(myFunction);
 
 // Enabling and disabling functions
-functionMap.enable("myFunctionName");
+functionMap.enable(myFunction);
 functionMap.disable("anotherFunctionName");
 
 // Building function definitions for use

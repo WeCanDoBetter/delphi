@@ -1,4 +1,4 @@
-# Delphi API Reference
+# Delphi API Reference > Agent
 
 This API reference provides details on the key classes and interfaces used in
 the Delphi framework for creating conversational agents.

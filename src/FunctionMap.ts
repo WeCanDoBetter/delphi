@@ -47,9 +47,13 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
 
   /**
    * Enable a function.
-   * @param name The name of the function to enable.
+   * @param nameOrFn The name of the function or the function itself.
    */
-  enable(name: string) {
+  enable(name: string): void;
+  enable(fn: AgentFunction<any, any>): void;
+  enable(nameOrFn: string | AgentFunction<any, any>) {
+    const name = typeof nameOrFn === "string" ? nameOrFn : nameOrFn.name;
+
     if (!this.has(name)) {
       throw new Error(`Function "${name}" does not exist.`);
     } else if (!this.#enabled.includes(name)) {
@@ -59,7 +63,7 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
 
   /**
    * Check if a function is enabled.
-   * @param name The name of the function to check.
+   * @param nameOrFn The name of the function or the function itself.
    * @throws {Error} If the function does not exist.
    */
   isEnabled(name: string) {
@@ -79,9 +83,13 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
 
   /**
    * Disable a function.
-   * @param name The name of the function to disable.
+   * @param nameOrFn The name of the function or the function itself.
    */
-  disable(name: string) {
+  disable(name: string): void;
+  disable(fn: AgentFunction<any, any>): void;
+  disable(nameOrFn: string | AgentFunction<any, any>) {
+    const name = typeof nameOrFn === "string" ? nameOrFn : nameOrFn.name;
+
     if (!this.has(name)) {
       throw new Error(`Function "${name}" does not exist.`);
     } else if (this.#enabled.includes(name)) {
