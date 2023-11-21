@@ -96,7 +96,7 @@ export class Agent extends EventTarget {
 
   /**
    * Process a function call. This will run the function and add the result to
-   * the context.
+   * the context. If there is no function call, this will do nothing.
    * @param context The context to process the function call with.
    * @param message The message to process the function call with.
    * @returns Whether the function call was processed. If so, the agent should

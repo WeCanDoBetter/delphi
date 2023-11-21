@@ -61,6 +61,9 @@ async validate(value: Input): Promise<Input>
 
 Executes the function with validated input.
 
+> **Note:** This method validates the input before executing the function. You
+> do not need to call `validate` before calling `run`.
+
 ```typescript
 async run(value: Input): Promise<Output>
 ```

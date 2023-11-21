@@ -1,11 +1,16 @@
 # 🏛️ Delphi
 
 Delphi is a versatile and adaptable conversational agent framework that
-streamlines the creation and management of chatbots and AI-driven communication
-systems. Its design prioritizes abstraction and provider-independence, allowing
-for seamless integration with various message providers. Delphi is compatible
-with a range of environments, including browsers, Node.js, and Deno, making it
-an ideal choice for diverse application scenarios.
+streamlines chatbots and AI-driven agent systems. Its design prioritizes
+abstraction and provider-independence, allowing for seamless integration with
+various message providers. Delphi is compatible with a range of environments,
+including browsers, Node.js, and Deno, making it an ideal choice for diverse
+application scenarios.
+
+> **Note:** Delphi is currently in development. While usable, the API is subject
+> to change. If you encounter a bug, please
+> [open an issue](https://github.com/WeCanDoBetter/delphi/issues/new) and help
+> us improve the framework!
 
 ## 🚀 Features
 

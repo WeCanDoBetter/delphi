@@ -1,6 +1,9 @@
 # API Reference
 
-- [Agent Function](./agent_function.md)
-- [Agent](./agent.md)
-- [Context](./context.md)
-- [Function Map](./function_map.md)
+The following pages detail the API for the Delphi framework.
+
+- [AgentFunction](./agent_function.md): Represents a function that an agent can
+  call.
+- [Agent](./agent.md): Represents a conversational agent.
+- [Context](./context.md): Manages the state of a conversation.
+- [FunctionMap](./function_map.md): Manages the functions available to an agent.

@@ -53,6 +53,16 @@ Here's a simple example of how you might use a function within a Delphi agent:
 ```typescript
 import { AgentFunction, type JSONSchemaType } from "@wecandobetter/delphi";
 
+interface WeatherParameters {
+  location: string;
+}
+
+interface WeatherData {
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+}
+
 const weatherSchema: JSONSchemaType<WeatherParameters> = {
   type: "object",
   properties: {
@@ -67,7 +77,7 @@ const weatherSchema: JSONSchemaType<WeatherParameters> = {
 };
 
 // Define a custom function
-const fetchWeatherInfo = new AgentFunction(
+const fetchWeatherInfo = new AgentFunction<WeatherParameters, WeatherData>(
   "getWeather",
   "Fetch current weather information",
   weatherSchema, // Your defined JSON schema for input validation

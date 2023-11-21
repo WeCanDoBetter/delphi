@@ -78,9 +78,9 @@ Initializes a new instance of `Agent`.
 Runs the agent with a given context and round.
 
 > The round is used internally when the model repeatedly calls functions. When
-> calling the agent directly, the round should be set to 1. If `maxRounds` is
-> reached, the agent will omit the functions and return the chat message as
-> usual.
+> calling the agent directly, the round should be omitted (as it defaults to 1).
+> When the maximum number of rounds is reached, the agent will omit the
+> functions and return the next chat message.
 
 ```typescript
 async run(context: Context, round = 1): Promise<ChatMessage>

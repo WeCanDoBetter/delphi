@@ -1,6 +1,6 @@
-# Example
+# Delphi Documentation > Examples > Wikipedia Search
 
-Here's a simple example of how you might use a function within a Delphi agent.
+This is a simple example of how you might use functions within a Delphi agent.
 This example uses the [OpenAI API](https://openai.com/) to search Wikipedia and
 tell the user about a random scientific subject.
 
@@ -12,6 +12,10 @@ In this example, we create two agent functions:
 We then create an agent that uses the OpenAI API to generate responses. The
 agent is configured to use the `gpt-4-1106-preview` model. The agent's context
 is configured to use the `search` and `intro` functions.
+
+## Prerequisites
+
+Import the required packages:
 
 ```ts
 import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
@@ -36,9 +40,9 @@ interface SearchParameters {
   query: string;
 }
 
-interface SearchResult {
+interface SearchOutput {
   /** The results of the search. */
-  results: string[];
+  titles: string[];
   /** A suggested search query. */
   suggestion?: string;
 }
@@ -63,10 +67,7 @@ suggestion.
 
 ```ts
 // Create the function
-const searchFn = new AgentFunction<
-  SearchParameters,
-  SearchResult
->(
+const searchFn = new AgentFunction<SearchParameters, SearchOutput>(
   "search",
   "Search on Wikipedia",
   searchSchema,
@@ -82,8 +83,8 @@ const searchFn = new AgentFunction<
 
     // Return the results and suggestion
     return {
-      results: results.map(({ title }) => title),
-      suggestion: sugg,
+      titles: results.map(({ title }) => title),
+      suggestion,
     };
   },
 );
@@ -92,7 +93,8 @@ const searchFn = new AgentFunction<
 ## The `intro` Function
 
 Next we define the input type for the intro function. The input is validated
-using the JSON schema.
+using the JSON schema. The output will be a string, so we don't need to define
+an output type.
 
 ```ts
 interface IntroParameters {

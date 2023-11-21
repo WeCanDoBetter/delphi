@@ -21,15 +21,15 @@ This class stores and manages messages and functions for a conversational agent.
 ### Constructor
 
 ```typescript
-constructor(messages: ChatMessage[] = [], functions = new FunctionMap())
+constructor(messages: ChatMessage[] = [], functions?: Iterable<AgentFunction<any, any>>)
 ```
 
 Initializes a new instance of `Context`.
 
-| Parameter   | Type            | Description                                    |
-| ----------- | --------------- | ---------------------------------------------- |
-| `messages`  | `ChatMessage[]` | Initial array of chat messages (default: []).  |
-| `functions` | `FunctionMap`   | Map of functions (default: new FunctionMap()). |
+| Parameter   | Type                                | Description                                   |
+| ----------- | ----------------------------------- | --------------------------------------------- |
+| `messages`  | `ChatMessage[]`                     | Initial array of chat messages (default: []). |
+| `functions` | `Iterable<AgentFunction<any, any>>` | Iterable of functions to add.                 |
 
 ### Properties
 
