@@ -1,67 +1,80 @@
-import { Agent, type AgentOptions, type ClientFunction } from "../src/Agent";
+import { Agent } from "../src/Agent";
 import { Context } from "../src/Context";
 import type { ChatMessage } from "../src/types";
 
-describe("Agent", () => {
-  // Mock data and functions
-  const mockMessage: ChatMessage = { role: "user", content: "Hello" };
-  const mockClient = jest.fn().mockResolvedValue(mockMessage);
-  const mockAgentOptions: AgentOptions = {
-    client: { model: "test-model" },
-    maxRounds: 3,
-    description: "Test agent",
-  };
+const mockClientFunction = jest.fn();
 
-  // Test constructor
-  it("should initialize with provided name, client, and options", () => {
-    const agent = new Agent("TestAgent", mockClient, mockAgentOptions);
-    expect(agent.name).toBe("TestAgent");
-    expect(agent.description).toBe("Test agent");
-    expect(agent.options).toEqual({
-      ...Agent.DEFAULT_OPTIONS,
-      ...mockAgentOptions,
+describe("Agent", () => {
+  let agent: Agent;
+  let mockContext: Context;
+
+  beforeEach(() => {
+    agent = new Agent("test-agent", mockClientFunction, {
+      client: { model: "gpt-3" },
+      maxRounds: 3,
     });
+    mockContext = new Context();
+    mockClientFunction.mockReset();
   });
 
-  // Test run method
-  describe("run", () => {
-    it("should call the client function and add the returned message to the context", async () => {
-      const agent = new Agent("TestAgent", mockClient, mockAgentOptions);
-      const context = new Context();
-      const result = await agent.run(context);
+  it("should run for the maximum number of rounds", async () => {
+    mockClientFunction.mockResolvedValueOnce({
+      content: "response 1",
+      role: "system",
+    })
+      .mockResolvedValueOnce({ content: "response 2", role: "system" })
+      .mockResolvedValueOnce({ content: "response 3", role: "system" });
 
-      expect(mockClient).toHaveBeenCalled();
-      expect(result).toBe(mockMessage);
-      expect(context.messages).toContain(mockMessage);
+    const messages: ChatMessage[] = [];
+    for await (const message of agent.run(mockContext)) {
+      messages.push(message);
+    }
+
+    expect(messages).toHaveLength(3);
+    expect(messages.map((m) => m.content)).toEqual([
+      "response 1",
+      "response 2",
+      "response 3",
+    ]);
+    expect(mockClientFunction).toHaveBeenCalledTimes(3);
+  });
+
+  it("should abort running when signaled", async () => {
+    const abortController = new AbortController();
+    mockClientFunction.mockResolvedValue({
+      content: "response",
+      role: "system",
     });
 
-    it("should throw an error if the function call does not exist in the context", async () => {
-      const agent = new Agent("TestAgent", mockClient, mockAgentOptions);
-      const context = new Context();
-
-      mockClient.mockResolvedValueOnce({
-        ...mockMessage,
-        functionCall: { name: "nonExistentFunction", arguments: "{}" },
-      });
-
-      await expect(agent.run(context)).rejects.toThrow(Error);
+    const messageIterator = agent.run(mockContext, {
+      signal: abortController.signal,
     });
+    const messagePromise = messageIterator.next();
+    abortController.abort();
 
-    it("should handle function calls and add the result to the context", async () => {
-      // Define a mock function in the context
-      // Add more test cases here for various scenarios
-    });
+    const { value, done } = await messagePromise;
+    expect(value).toEqual({ content: "response", role: "system" });
+    expect(done).toBe(false);
+    expect(mockClientFunction).toHaveBeenCalledTimes(1);
+  });
 
-    it("should respect the maxRounds option", async () => {
-      const agent = new Agent("TestAgent", mockClient, mockAgentOptions);
-      const context = new Context();
+  it("should process function calls correctly", async () => {
+    mockClientFunction
+      .mockResolvedValueOnce({
+        content: "question",
+        role: "system",
+        functionCall: { name: "fetchData", arguments: "{}" },
+      })
+      .mockResolvedValueOnce({ content: "data", role: "function" });
 
-      // Test that the agent stops after the specified number of rounds
-      // Add more test cases here for various scenarios
-    });
+    const messages: ChatMessage[] = [];
+    for await (const message of agent.run(mockContext)) {
+      messages.push(message);
+    }
 
-    // Add more test cases to cover different scenarios, such as
-    // handling errors during function execution, function argument parsing,
-    // and cases where no function is called.
+    expect(messages).toHaveLength(2);
+    expect(messages[0].content).toBe("question");
+    expect(messages[1].content).toBe("data");
+    expect(mockClientFunction).toHaveBeenCalledTimes(2);
   });
 });

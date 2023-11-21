@@ -75,23 +75,17 @@ Initializes a new instance of `Agent`.
 
 ### Method: `run`
 
-Runs the agent with a given context and round.
-
-> The round is used internally when the model repeatedly calls functions. When
-> calling the agent directly, the round should be omitted (as it defaults to 1).
-> When the maximum number of rounds is reached, the agent will omit the
-> functions and return the next chat message.
+Runs the agent with a given context.
 
 ```typescript
-async run(context: Context, round = 1): Promise<ChatMessage>
+async* run(context: Context): AsyncIterableIterator<ChatMessage>
 ```
 
 _Parameters_:
 
 - `context: Context`: The context to run the agent with.
-- `round: number`: The current round number (default is 1).
 
-_Returns_: `Promise<ChatMessage>` - The result of the agent's operation.
+_Returns_: `IterableIterator<ChatMessage>` - An iterator of chat messages.
 
 ### Error Handling
 

@@ -190,9 +190,34 @@ Now we can run the agent with the context. The agent will use the functions
 defined in the context to process the messages.
 
 ```ts
-// run the agent with the function included in the context
-const result = await agent.run(context);
-console.log(result.content); // "Quantum mechanics is a..."
+for (const message of agent.run(context)) {
+  console.log(message.content);
+}
+```
+
+For the first run, the message will be the function call:
+
+```json
+{
+  "role": "function",
+  "functionCall": {
+    "function": "search",
+    "parameters": {
+      "query": "quantum mechanics"
+    }
+  }
+}
+```
+
+The function is automatically called by the agent. The agent will then use the
+result of the function call to generate a response. The response will be the
+introduction of a random article.
+
+```json
+{
+  "role": "agent",
+  "content": "Quantum machanics is a..."
+}
 ```
 
 This shows how you can use functions to enhance your agent's capabilities.

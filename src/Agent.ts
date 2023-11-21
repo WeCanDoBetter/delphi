@@ -26,6 +26,11 @@ export interface AgentOptions {
   client: Omit<ClientOptions, "functionCall" | "functions">;
 }
 
+export interface RunOptions {
+  /** The abort signal. */
+  signal?: AbortSignal;
+}
+
 /** The default agent options. */
 type DefaultAgentOptions = Required<
   Omit<AgentOptions, "model" | "description" | "client">
@@ -69,29 +74,52 @@ export class Agent extends EventTarget {
    * called again. This will continue until the agent does not call any
    * functions, or the maximum number of rounds is reached.
    * @param context The context to run the agent with.
-   * @param round The round for this call.
+   * @param options The options to run the agent with.
+   * @param options.signal The abort signal.
    * @returns The result of the agent.
    */
-  async run(context: Context, round = 1): Promise<ChatMessage> {
-    const { messages, functions } = context.build();
-    const isLastRound = round >= (this.options.maxRounds ?? 5);
+  async *run(
+    context: Context,
+    { signal }: RunOptions = {},
+  ): AsyncIterableIterator<ChatMessage> {
+    const runRound = async (round: number): Promise<ChatMessage> => {
+      const { messages, functions } = context.build();
+      const isLastRound = round >= this.options.maxRounds!;
 
-    const message = await this.#client(messages, {
-      ...this.options.client,
-      functionCall: isLastRound || !functions.length ? "none" : "auto",
-      functions: isLastRound || !functions.length ? undefined : functions,
-    });
+      return this.#client(messages, {
+        ...this.options.client,
+        functionCall: isLastRound || !functions.length ? "none" : "auto",
+        functions: isLastRound || !functions.length ? undefined : functions,
+      });
+    };
 
-    // Add the message to the context
-    context.addMessage(message);
+    // Loop through the rounds, until the maximum number of rounds is reached
+    for (let round = 1; round <= this.options.maxRounds!; round++) {
+      if (signal?.aborted) {
+        // Abort the agent
+        break;
+      }
 
-    // Process the function call
-    if (await this.#processFunctionCall(context, message)) {
-      // Run the agent again
-      return this.run(context, round + 1);
+      // Run the round
+      const message = await runRound(round);
+
+      // Add the message to the context
+      context.addMessage(message);
+
+      // Yield the message
+      yield message;
+
+      // Process the function call
+      const response = await this.#processFunctionCall(context, message);
+
+      if (response) {
+        // Add the function result to the context
+        context.addMessage(response);
+
+        // Yield the function result
+        yield response;
+      }
     }
-
-    return message;
   }
 
   /**
@@ -109,13 +137,14 @@ export class Agent extends EventTarget {
   async #processFunctionCall(
     context: Context,
     message: ChatMessage,
-  ): Promise<boolean> {
+  ): Promise<ChatMessage | null> {
     const { functionCall } = message;
 
     if (!functionCall) {
-      return false;
+      return null;
     }
 
+    // Get the function
     const fn = context.functions.get(functionCall.name);
 
     if (!fn) {
@@ -127,6 +156,7 @@ export class Agent extends EventTarget {
     let args: unknown;
 
     try {
+      // Attempt to parse the function arguments
       args = JSON.parse(functionCall.arguments);
     } catch (error: any) {
       throw new AggregateError(
@@ -138,18 +168,19 @@ export class Agent extends EventTarget {
     let value: unknown;
 
     try {
+      // Run the function
       value = await fn.run(args);
     } catch (error: any) {
       throw new AggregateError([error], "Failed to run function.");
     }
 
-    // Add the function result to the context
-    context.addMessage({
+    // Create the function result
+    const result: ChatMessage = {
       role: "function",
       name: functionCall.name,
       content: typeof value === "string" ? value : JSON.stringify(value),
-    });
+    };
 
-    return true;
+    return result;
   }
 }
