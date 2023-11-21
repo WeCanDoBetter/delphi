@@ -5,7 +5,7 @@ agent to execute specific tasks, like data retrieval or complex computations,
 dynamically during a conversation. Let's dive into how you can utilize these
 functions in your Delphi projects.
 
-### Defining Functions
+## Defining Functions
 
 - **Custom Functions:** You can define custom functions tailored to your
   specific needs. These functions can perform various tasks like fetching data
@@ -13,7 +13,7 @@ functions in your Delphi projects.
 - **Schema Validation:** Delphi uses JSON schemas to validate the inputs of
   these functions, ensuring data integrity and correctness.
 
-### Registering Functions
+## Registering Functions
 
 - **Function Registration:** After defining a function, you need to register it
   with the context. This registration process tells the context which functions
@@ -24,7 +24,7 @@ functions in your Delphi projects.
   context.addFunction(myFunction, true); // second argument is whether to enable immediately
   ```
 
-### Enabling And Disabling Functions
+## Enabling And Disabling Functions
 
 - **Enabling:** Once registered, a function may not be immediately enabled. This
   step offers control over which functions are active at any given time. To
@@ -43,20 +43,20 @@ functions in your Delphi projects.
 
   Disabled functions will not be available to the agent during conversations.
 
-### Function Invocation
+## Function Invocation
 
 - **During Conversations:** The model may invoke functions during a
   conversation. This will enhance the agent's context, allowing it to respond
   more intelligently to the user, and to perform more complex tasks.
 
-### Handling Responses
+## Handling Responses
 
 - **Response Integration:** The results from function calls are seamlessly
   integrated into the conversation. Depending on your function's design, it can
   directly influence the agent's next response or modify the conversation's
   context.
 
-Example:
+## Example
 
 ```typescript
 import { AgentFunction, type JSONSchemaType } from "@wecandobetter/delphi";
@@ -97,18 +97,6 @@ const fetchWeatherInfo = new AgentFunction<WeatherParameters, WeatherData>(
       windSpeed: 10,
   },
 );
-```
-
-## Step 3: Register and Enable the Function
-
-With your function defined, the next step is to register it with your agent's
-context and enable it.
-
-```typescript
-const context = new Context();
-
-// set the second argument to true to enable the function
-context.addFunction(exampleFunction, true);
 ```
 
 ## Conclusion

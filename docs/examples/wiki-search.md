@@ -202,7 +202,7 @@ For the first run, the message will be the function call:
   "role": "function",
   "functionCall": {
     "function": "search",
-    "parameters": {
+    "arguments": {
       "query": "quantum mechanics"
     }
   }
@@ -215,7 +215,7 @@ introduction of a random article.
 
 ```json
 {
-  "role": "agent",
+  "role": "assistant",
   "content": "Quantum machanics is a..."
 }
 ```

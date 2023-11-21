@@ -76,8 +76,9 @@ To quickly get started with Delphi:
 
 4. **Run the Agent:** Start the agent with the initialized context.
    ```typescript
-   const message = await agent.run(context);
-   console.log(message.content); // "Sure! How can I help?"
+   for (const message of agent.run(context)) {
+     console.log(message.content); // "Sure, how can I help?"
+   }
    ```
 
 This example gives you a basic setup for initiating a conversation with Delphi.
@@ -90,8 +91,8 @@ For more detailed usage and advanced features, refer to the documentation.
 - [Example: Wikipedia](./docs/example.md)
 - [API Reference](./docs/api/README.md)
 
-Visit the [documentation](./docs) for information on API usage and advanced
-features.
+Visit the [documentation](https://wecandobetter.github.io/delphi/) for
+information on API usage and advanced features.
 
 ## 🤝 Contributing
 
