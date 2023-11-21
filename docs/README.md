@@ -14,8 +14,8 @@ application scenarios.
 
 ## Guides
 
-- [Agent Functions](agent_functions.md)
-- [Function Calling](function_calling.md)
+- [Agent Functions](agent_functions.md); Learn how to use agent functions to
+  enhance your agent's capabilities.
 
 ## Examples
 

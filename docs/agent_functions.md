@@ -5,52 +5,96 @@ agent to execute specific tasks, like data retrieval or complex computations,
 dynamically during a conversation. Let's dive into how you can utilize these
 functions in your Delphi projects.
 
-## Step 1: Setting Up Your Environment
+### Defining Functions
 
-Before beginning, ensure you have Delphi and its dependencies installed in your
-project. If you haven't already set up Delphi, refer to the 'Getting Started'
-section of the Delphi README.
+- **Custom Functions:** You can define custom functions tailored to your
+  specific needs. These functions can perform various tasks like fetching data
+  from an API, processing user input, or carrying out computations.
+- **Schema Validation:** Delphi uses JSON schemas to validate the inputs of
+  these functions, ensuring data integrity and correctness.
 
-## Step 2: Define an Agent Function
+### Registering Functions
 
-An agent function in Delphi takes an input, performs an operation, and returns
-an output. To define one:
+- **Function Registration:** After defining a function, you need to register it
+  with the context. This registration process tells the context which functions
+  are available for use during a conversation.
 
-1. **Create a New Function Class**: Define a new class for your function.
+  ```typescript
+  const myFunction = new AgentFunction(/* ... configuration ... */);
+  context.addFunction(myFunction, true); // second argument is whether to enable immediately
+  ```
 
-2. **Specify Input Schema**: Define a JSON schema for the input. This schema is
-   used to validate the data your function will receive.
+### Enabling And Disabling Functions
 
-3. **Implement the Function Logic**: Write the core logic of your function in
-   the constructor.
+- **Enabling:** Once registered, a function may not be immediately enabled. This
+  step offers control over which functions are active at any given time. To
+  enable a function, use the `enable` method on the `functions` property of the
+  context.
+
+  ```typescript
+  context.functions.enable(myFunction.name);
+  ```
+- **Disabling:** To disable a function, use the `disable` method on the
+  `functions` property of the context.
+
+  ```typescript
+  context.functions.disable(myFunction.name);
+  ```
+
+  Disabled functions will not be available to the agent during conversations.
+
+### Function Invocation
+
+- **During Conversations:** The model may invoke functions during a
+  conversation. This will enhance the agent's context, allowing it to respond
+  more intelligently to the user, and to perform more complex tasks.
+
+### Handling Responses
+
+- **Response Integration:** The results from function calls are seamlessly
+  integrated into the conversation. Depending on your function's design, it can
+  directly influence the agent's next response or modify the conversation's
+  context.
 
 Example:
 
 ```typescript
 import { AgentFunction, type JSONSchemaType } from "@wecandobetter/delphi";
 
-interface ExampleInput {
-  query: string;
+interface WeatherParameters {
+  location: string;
 }
 
-const exampleInputSchema: JSONSchemaType<ExampleInput> = {
+interface WeatherData {
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+}
+
+const weatherSchema: JSONSchemaType<WeatherParameters> = {
   type: "object",
   properties: {
-    query: {
+    location: {
       type: "string",
-      description: "The query to search for.",
+      description:
+        "The location to fetch weather information for (e.g. 'New York, NY').",
     },
   },
-  required: ["query"],
+  required: ["location"],
+  additionalProperties: false,
 };
 
-const exampleFunction = new AgentFunction<ExampleInput, string>(
-  "exampleFunction",
-  "This is an example function",
-  exampleInputSchema,
-  async ({ query }) => {
-    // Your function logic here, returning a string
-    return `You queried: ${query}`;
+// Define a custom function
+const fetchWeatherInfo = new AgentFunction<WeatherParameters, WeatherData>(
+  "getWeather",
+  "Fetch current weather information",
+  weatherSchema, // Your defined JSON schema for input validation
+  async (params) => {
+    // Logic to fetch weather information
+    return {
+      temperature: 22.5, // in Celsius
+      humidity: 0.5,
+      windSpeed: 10,
   },
 );
 ```

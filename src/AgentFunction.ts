@@ -60,7 +60,7 @@ export class AgentFunction<Input, Output> {
    * @returns The validated input.
    * @throws {AggregateError} If the input is invalid.
    */
-  async validate(value: Input): Promise<Input> {
+  async validate(value: unknown): Promise<Input> {
     if (!this.#validate) {
       this.#validate = await ajv.compileAsync<Input & { $async: true }>({
         ...this.schema,
@@ -84,7 +84,7 @@ export class AgentFunction<Input, Output> {
    * @throws {AggregateError} If the input is invalid.
    * @throws {AggregateError} If the function throws an error.
    */
-  async run(value: Input): Promise<Output> {
+  async run(value: unknown): Promise<Output> {
     const input = await this.validate(value);
 
     try {
