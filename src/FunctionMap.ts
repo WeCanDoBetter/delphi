@@ -8,13 +8,21 @@ import type { AgentFunction } from "./AgentFunction";
 export class FunctionMap extends Map<string, AgentFunction<any, any>> {
   #enabled: string[] = [];
 
-  constructor(functions?: Iterable<AgentFunction<any, any>>) {
+  /**
+   * Create a new function map.
+   * @param functions The functions to add to the map.
+   * @param enable Whether to enable the functions (default: `false`).
+   */
+  constructor(functions?: Iterable<AgentFunction<any, any>>, enable = false) {
     super();
 
     if (functions) {
       for (const fn of functions) {
         this.set(fn.name, fn);
-        this.#enabled.push(fn.name);
+
+        if (enable) {
+          this.#enabled.push(fn.name);
+        }
       }
     }
   }
@@ -102,6 +110,14 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
    */
   disableAll() {
     this.#enabled = [];
+  }
+
+  /**
+   * Create a duplicate of the function map.
+   * @param enable Whether to enable the functions (default: `false`).
+   */
+  duplicate(enable = false) {
+    return new FunctionMap(this.values(), enable);
   }
 
   /**

@@ -2,6 +2,7 @@ export type {
   BaseClientOptions,
   ChatMessage,
   FunctionDefinition,
+  JSONSchemaType,
 } from "./types";
 
 export { Agent, type AgentOptions, type ClientFunction } from "./Agent";
