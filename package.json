@@ -2,6 +2,7 @@
   "name": "@wecandobetter/delphi",
   "version": "0.0.1-alpha.1",
   "description": "Delphi is a versatile and adaptable conversational agent framework that streamlines the creation and management of chatbots and AI-driven communication systems.",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run build:ts",
