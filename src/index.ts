@@ -1,6 +1,7 @@
 export type {
   BaseClientOptions,
   ChatMessage,
+  FunctionCall,
   FunctionDefinition,
   JSONSchemaType,
 } from "./types";
