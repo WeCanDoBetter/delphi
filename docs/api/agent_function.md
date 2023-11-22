@@ -40,17 +40,14 @@ This class represents a function that an agent can call.
 ### Constructor
 
 ```typescript
-constructor(name: string, description: string, schema: JSONSchemaType<Input>, fn: AgentFn<Input, Output>)
+constructor(options: AgentFunctionOptions)
 ```
 
 Initializes a new instance of `AgentFunction`.
 
-| Parameter     | Type                     | Description                       |
-| ------------- | ------------------------ | --------------------------------- |
-| `name`        | `string`                 | Name of the function.             |
-| `description` | `string`                 | Description of the function.      |
-| `schema`      | `JSONSchemaType<Input>`  | JSON schema for input validation. |
-| `fn`          | `AgentFn<Input, Output>` | The function to be executed.      |
+| Parameter | Type                   | Description                        |
+| --------- | ---------------------- | ---------------------------------- |
+| `options` | `AgentFunctionOptions` | Configuration options of function. |
 
 ### Methods
 

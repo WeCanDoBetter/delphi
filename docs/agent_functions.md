@@ -32,13 +32,13 @@ functions in your Delphi projects.
   context.
 
   ```typescript
-  context.functions.enable(myFunction.name);
+  context.functions.enable(myFunction); // or by name
   ```
 - **Disabling:** To disable a function, use the `disable` method on the
   `functions` property of the context.
 
   ```typescript
-  context.functions.disable(myFunction.name);
+  context.functions.disable(myFunction); // or by name
   ```
 
   Disabled functions will not be available to the agent during conversations.

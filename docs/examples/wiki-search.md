@@ -202,16 +202,14 @@ For the first run, the message will be the function call:
   "role": "function",
   "functionCall": {
     "function": "search",
-    "arguments": {
-      "query": "quantum mechanics"
-    }
+    "arguments": "{ \"query\": \"quantum mechanics\" }"
   }
 }
 ```
 
 The function is automatically called by the agent. The agent will then use the
-result of the function call to generate a response. The response will be the
-introduction of a random article.
+result of the function call to generate a response. The response will be its
+response based on the introduction of the article:
 
 ```json
 {

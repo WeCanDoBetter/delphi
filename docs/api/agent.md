@@ -58,20 +58,31 @@ A type representing required fields from `AgentOptions`.
 
 A class representing an agent used to run conversations.
 
+### Static Properties
+
+| Property          | Type                  | Description                    |
+| ----------------- | --------------------- | ------------------------------ |
+| `DEFAULT_OPTIONS` | `DefaultAgentOptions` | Default options for the agent. |
+
 ### Properties
 
-- `static DEFAULT_OPTIONS: DefaultAgentOptions`: Default options for the agent.
-- `name: string`: The name of the agent.
-- `description?: string`: The description of the agent.
-- `options: AgentOptions`: Configuration options of the agent.
+| Property      | Type           | Description                        |
+| ------------- | -------------- | ---------------------------------- |
+| `name`        | `string`       | Name of the agent                  |
+| `description` | `string`       | Description of the agent           |
+| `options`     | `AgentOptions` | Configuration options of the agent |
 
 ### Constructor
 
 ```typescript
-constructor(name: string, client: ClientFunction, options: AgentOptions)
+constructor(options: AgentOptions)
 ```
 
 Initializes a new instance of `Agent`.
+
+| Parameter | Type           | Description                  |
+| --------- | -------------- | ---------------------------- |
+| `options` | `AgentOptions` | Configuration options of the |
 
 ### Method: `run`
 
@@ -83,9 +94,11 @@ async* run(context: Context): AsyncIterableIterator<ChatMessage>
 
 _Parameters_:
 
-- `context: Context`: The context to run the agent with.
+| Parameter | Type      | Description                        |
+| --------- | --------- | ---------------------------------- |
+| `context` | `Context` | The context to run the agent with. |
 
-_Returns_: `IterableIterator<ChatMessage>` - An iterator of chat messages.
+_Returns_: `AsyncIterableIterator<ChatMessage>` - An iterator of chat messages.
 
 ### Error Handling
 
