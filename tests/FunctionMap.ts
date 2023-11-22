@@ -16,23 +16,25 @@ describe("FunctionMap", () => {
   };
 
   // Mock functions
-  const mockFunction1 = new AgentFunction<TestInput, TestOutput>(
-    "func1",
-    "Test Function 1",
+  const mockFunction1 = new AgentFunction<TestInput, TestOutput>({
+    name: "func1",
+    description: "Test Function 1",
     schema,
-    async ({ n }) => ({ n }),
-  );
+    fn: async ({ n }) => ({ n }),
+  });
 
-  const mockFunction2 = new AgentFunction<TestInput, TestOutput>(
-    "func2",
-    "Test Function 2",
+  const mockFunction2 = new AgentFunction<TestInput, TestOutput>({
+    name: "func2",
+    description: "Test Function 2",
     schema,
-    async ({ n }) => ({ n }),
-  );
+    fn: async ({ n }) => ({ n }),
+  });
 
   // Test constructor
   it("should initialize with provided functions", () => {
-    const functionMap = new FunctionMap([mockFunction1, mockFunction2]);
+    const functionMap = new FunctionMap(
+      [mockFunction1, mockFunction2].values(),
+    );
     expect(functionMap.size).toBe(2);
     expect(functionMap.get("func1")).toBe(mockFunction1);
     expect(functionMap.get("func2")).toBe(mockFunction2);
@@ -46,7 +48,7 @@ describe("FunctionMap", () => {
 
   // Test enable method
   it("should enable a function", () => {
-    const functionMap = new FunctionMap([mockFunction1]);
+    const functionMap = new FunctionMap([mockFunction1].values());
     functionMap.enable("func1");
     expect(functionMap.enabled).toContain("func1");
   });
@@ -58,14 +60,16 @@ describe("FunctionMap", () => {
 
   // Test enableAll method
   it("should enable all functions", () => {
-    const functionMap = new FunctionMap([mockFunction1, mockFunction2]);
+    const functionMap = new FunctionMap(
+      [mockFunction1, mockFunction2].values(),
+    );
     functionMap.enableAll();
     expect(functionMap.enabled).toEqual(["func1", "func2"]);
   });
 
   // Test disable method
   it("should disable a function", () => {
-    const functionMap = new FunctionMap([mockFunction1]);
+    const functionMap = new FunctionMap([mockFunction1].values());
     functionMap.enable("func1");
     functionMap.disable("func1");
     expect(functionMap.enabled).not.toContain("func1");
@@ -78,7 +82,9 @@ describe("FunctionMap", () => {
 
   // Test disableAll method
   it("should disable all functions", () => {
-    const functionMap = new FunctionMap([mockFunction1, mockFunction2]);
+    const functionMap = new FunctionMap(
+      [mockFunction1, mockFunction2].values(),
+    );
     functionMap.enableAll();
     functionMap.disableAll();
     expect(functionMap.enabled).toEqual([]);
@@ -86,7 +92,9 @@ describe("FunctionMap", () => {
 
   // Test build method
   it("should build function definitions for enabled functions", () => {
-    const functionMap = new FunctionMap([mockFunction1, mockFunction2]);
+    const functionMap = new FunctionMap(
+      [mockFunction1, mockFunction2].values(),
+    );
     functionMap.enable("func2");
     const definitions = functionMap.build();
     expect(definitions.length).toBe(1);

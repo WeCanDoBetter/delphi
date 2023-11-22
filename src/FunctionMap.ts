@@ -13,7 +13,10 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
    * @param functions The functions to add to the map.
    * @param enable Whether to enable the functions (default: `false`).
    */
-  constructor(functions?: Iterable<AgentFunction<any, any>>, enable = false) {
+  constructor(
+    functions?: IterableIterator<AgentFunction<any, any>>,
+    enable = false,
+  ) {
     super();
 
     if (functions) {
@@ -54,11 +57,10 @@ export class FunctionMap extends Map<string, AgentFunction<any, any>> {
    * @param fns The functions to add.
    */
   addFunctions(
-    ...fns:
-      (AgentFunction<any, any> | {
-        fn: AgentFunction<any, any>;
-        enabled?: boolean;
-      })[]
+    ...fns: (AgentFunction<any, any> | {
+      fn: AgentFunction<any, any>;
+      enabled?: boolean;
+    })[]
   ) {
     for (const fn of fns) {
       const actualFn = fn instanceof AgentFunction ? fn : fn.fn;

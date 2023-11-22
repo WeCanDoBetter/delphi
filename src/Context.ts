@@ -13,6 +13,16 @@ export interface BuiltContext {
 }
 
 /**
+ * Context options.
+ */
+export interface ContextOptions {
+  /** The messages in the context. */
+  messages?: ChatMessage[];
+  /** The functions in the context. */
+  functions?: IterableIterator<AgentFunction<any, any>>;
+}
+
+/**
  * A context. This is used to store messages and functions that can be called
  * by the agent.
  */
@@ -20,10 +30,9 @@ export class Context {
   #messages: ChatMessage[];
   #functions: FunctionMap;
 
-  constructor(
-    messages: ChatMessage[] = [],
-    functions?: Iterable<AgentFunction<any, any>>,
-  ) {
+  constructor(options: ContextOptions = {}) {
+    const { messages = [], functions } = options;
+
     this.#messages = messages;
     this.#functions = new FunctionMap(functions);
   }
@@ -80,6 +89,9 @@ export class Context {
    * @returns A duplicate of the context.
    */
   duplicate(): Context {
-    return new Context([...this.#messages], this.#functions.values());
+    return new Context({
+      messages: [...this.#messages],
+      functions: this.#functions.values(),
+    });
   }
 }

@@ -1,28 +1,24 @@
-import Ajv, {
-  type AsyncValidateFunction,
-  type ErrorObject,
-  type JSONSchemaType,
-} from "ajv";
+import Ajv, { type JSONSchemaType, type ValidateFunction } from "ajv";
+import { ValidationError } from "./errors";
 
+// Ajv instance.
 const ajv = new Ajv();
-
-/**
- * A validation error which contains the validation errors.
- */
-export class ValidationError extends Error {
-  /** The validation errors. */
-  readonly errors: ReadonlyArray<ErrorObject>;
-
-  constructor(errors: ErrorObject[], message = "Invalid input.") {
-    super(message);
-    this.errors = errors;
-  }
-}
 
 /**
  * An agent function. This is a function that can be called by the agent.
  */
 export type AgentFn<Input, Output> = (value: Input) => Promise<Output>;
+
+export interface AgentFunctionOptions<Input, Output> {
+  /** The name of the function. */
+  name: string;
+  /** The description of the function. */
+  description: string;
+  /** The schema of the function input. */
+  schema: JSONSchemaType<Input>;
+  /** The function. */
+  fn: AgentFn<Input, Output>;
+}
 
 /**
  * An agent function. This is a function that can be called by the agent.
@@ -35,15 +31,12 @@ export class AgentFunction<Input, Output> {
   /** The schema of the function input. */
   readonly schema: JSONSchemaType<Input>;
 
-  #validate?: AsyncValidateFunction<Input>;
+  #validate?: ValidateFunction<Input>;
   #fn: AgentFn<Input, Output>;
 
-  constructor(
-    name: string,
-    description: string,
-    schema: JSONSchemaType<Input>,
-    fn: AgentFn<Input, Output>,
-  ) {
+  constructor(options: AgentFunctionOptions<Input, Output>) {
+    const { name, description, schema, fn } = options;
+
     this.name = name;
     this.description = description;
     this.schema = schema;
@@ -57,24 +50,16 @@ export class AgentFunction<Input, Output> {
    * **Note**: This does not need to be called before calling `run`. It is
    * called automatically.
    * @param value The input to validate.
-   * @returns The validated input.
    * @throws {AggregateError} If the input is invalid.
    */
-  async validate(value: unknown): Promise<Input> {
+  validate(value: unknown) {
     if (!this.#validate) {
-      this.#validate = await ajv.compileAsync<Input & { $async: true }>({
-        ...this.schema,
-        $async: true,
-      });
+      this.#validate = ajv.compile(this.schema);
     }
 
-    const result = await this.#validate(value);
-
-    if (!result) {
+    if (!this.#validate(value)) {
       throw new ValidationError(this.#validate.errors ?? []);
     }
-
-    return result;
   }
 
   /**
@@ -84,11 +69,11 @@ export class AgentFunction<Input, Output> {
    * @throws {AggregateError} If the input is invalid.
    * @throws {AggregateError} If the function throws an error.
    */
-  async run(value: unknown): Promise<Output> {
-    const input = await this.validate(value);
+  async run(value: Input): Promise<Output> {
+    this.validate(value);
 
     try {
-      return await this.#fn(input);
+      return await this.#fn(value);
     } catch (error: any) {
       throw new AggregateError([error], "Failed to run function.");
     }

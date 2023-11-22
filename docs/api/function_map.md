@@ -12,7 +12,7 @@ enable or disable functions.
 ### Constructor
 
 ```typescript
-constructor(functions?: Iterable<AgentFunction<any, any>>)
+constructor(functions?: IterableIterator<AgentFunction<any, any>>, enable = false)
 ```
 
 Initializes a new instance of `FunctionMap`.

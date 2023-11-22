@@ -17,16 +17,25 @@ export type AgentFn<Input, Output> = (value: Input) => Promise<Output>;
 | `Input`  | Type of input the function will receive. |
 | `Output` | Type of output the function will return. |
 
+## `AgentFunctionOptions`
+
+`AgentFunctionOptions` is a type representing the required fields for
+`AgentFunction`.
+
+| Property      | Type                     | Description                       |
+| ------------- | ------------------------ | --------------------------------- |
+| `name`        | `string`                 | Name of the function.             |
+| `description` | `string`                 | Description of the function.      |
+| `schema`      | `JSONSchemaType<Input>`  | JSON schema for input validation. |
+| `fn`          | `AgentFn<Input, Output>` | The function to be executed.      |
+
 ## Class: `AgentFunction`
 
 This class represents a function that an agent can call.
 
 ### Properties
 
-- `name: string`: The name of the function.
-- `description: string`: A brief description of what the function does.
-- `schema: JSONSchemaType<Input>`: The JSON schema for validating the function's
-  input.
+- `options: AgentFunctionOptions`: Configuration options of the function.
 
 ### Constructor
 
@@ -53,7 +62,7 @@ Validates the input against the defined schema.
 > call it manually.
 
 ```typescript
-async validate(value: unknown): Promise<Input>
+async validate(value: unknown): value is Input
 ```
 
 - **Parameters**: `value: unknown` - The input to validate.
@@ -68,10 +77,10 @@ Executes the function with validated input.
 > do not need to call `validate` before calling `run`.
 
 ```typescript
-async run(value: unknown): Promise<Output>
+async run(value: Input): Promise<Output>
 ```
 
-- **Parameters**: `value: unknown` - The input to the function.
+- **Parameters**: `value: Input` - The input to the function.
 - **Returns**: `Promise<Output>` - The output of the function.
 - **Throws**: `AggregateError` if the input is invalid or if the function
   execution fails.

@@ -18,12 +18,12 @@ describe("Context", () => {
     additionalProperties: false,
   };
 
-  const mockFunction = new AgentFunction(
-    "test",
-    "description",
+  const mockFunction = new AgentFunction({
+    name: "testFunction",
+    description: "A test function",
     schema,
-    async ({ n }) => n,
-  );
+    fn: async ({ n }) => n,
+  });
 
   // Test constructor
   it("should initialize with default values", () => {
@@ -34,7 +34,9 @@ describe("Context", () => {
 
   // Test messages getter
   it("should return messages", () => {
-    const context = new Context([mockMessage]);
+    const context = new Context({
+      messages: [mockMessage],
+    });
     expect(context.messages).toContain(mockMessage);
   });
 
@@ -66,7 +68,9 @@ describe("Context", () => {
 
   // Test build
   it("should build the context", () => {
-    const context = new Context([mockMessage] /* mock function map */);
+    const context = new Context({
+      messages: [mockMessage],
+    });
     const builtContext = context.build();
     expect(builtContext.messages).toContain(mockMessage);
     // Validate the functions in builtContext
@@ -74,7 +78,9 @@ describe("Context", () => {
 
   // Test duplicate
   it("should create a duplicate of the context", () => {
-    const context = new Context([mockMessage]);
+    const context = new Context({
+      messages: [mockMessage],
+    });
     const duplicateContext = context.duplicate();
     expect(duplicateContext.messages).toEqual(context.messages);
     // Additional checks to ensure duplication

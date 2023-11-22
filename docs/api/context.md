@@ -4,15 +4,23 @@ The `Context` class in the Delphi framework is designed to manage the state of a
 conversation, including messages and functions. This API reference details its
 usage and capabilities.
 
-## `BuiltContext` Interface
+## `BuiltContext`
 
 A representation of a context prepared for use with the OpenAI API.
 
-### Properties
+| Property    | Type            | Description                            |
+| ----------- | --------------- | -------------------------------------- |
+| `messages`  | `ChatMessage[]` | Array of chat messages in the context. |
+| `functions` | `FunctionMap`   | Map of functions in the context.       |
 
-- `messages: ChatMessage[]`: An array of messages in the context.
-- `functions: FunctionDefinition[]`: An array of function definitions in the
-  context.
+## `ContextOptions`
+
+Configuration options for a `Context`. Both properties are optional.
+
+| Property    | Type                                | Description                                   |
+| ----------- | ----------------------------------- | --------------------------------------------- |
+| `messages`  | `ChatMessage[]`                     | Initial array of chat messages (default: []). |
+| `functions` | `Iterable<AgentFunction<any, any>>` | Iterable of functions to add.                 |
 
 ## Class: `Context`
 

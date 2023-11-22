@@ -24,18 +24,18 @@ describe("AgentFunction", () => {
   const output: Output = { result: "processed" };
 
   // Mock AgentFn function
-  const mockFn: AgentFn<Input, Output> = async (input) => {
+  const mockFn: AgentFn<Input, Output> = async () => {
     return output;
   };
 
   // Test constructor
   it("should initialize with provided values", () => {
-    const agentFunction = new AgentFunction(
-      "testFunction",
-      "A test function",
-      inputSchema,
-      mockFn,
-    );
+    const agentFunction = new AgentFunction({
+      name: "testFunction",
+      description: "A test function",
+      schema: inputSchema,
+      fn: mockFn,
+    });
     expect(agentFunction.name).toBe("testFunction");
     expect(agentFunction.description).toBe("A test function");
     expect(agentFunction.schema).toBe(inputSchema);
@@ -44,48 +44,45 @@ describe("AgentFunction", () => {
   // Test validate method
   describe("validate", () => {
     it("should validate correct input", async () => {
-      const agentFunction = new AgentFunction(
-        "testFunction",
-        "A test function",
-        inputSchema,
-        mockFn,
-      );
-      await expect(agentFunction.validate(validInput)).resolves.toEqual(
-        validInput,
-      );
+      const agentFunction = new AgentFunction({
+        name: "testFunction",
+        description: "A test function",
+        schema: inputSchema,
+        fn: mockFn,
+      });
+      expect(agentFunction.validate(validInput)).toBeUndefined();
     });
 
     it("should throw an error for invalid input", async () => {
-      const agentFunction = new AgentFunction(
-        "testFunction",
-        "A test function",
-        inputSchema,
-        mockFn,
-      );
-      await expect(agentFunction.validate(invalidInput as unknown as Input))
-        .rejects.toThrow(Error);
+      const agentFunction = new AgentFunction({
+        name: "testFunction",
+        description: "A test function",
+        schema: inputSchema,
+        fn: mockFn,
+      });
+      expect(agentFunction.validate(invalidInput)).toThrow(Error);
     });
   });
 
   // Test run method
   describe("run", () => {
     it("should run successfully with valid input", async () => {
-      const agentFunction = new AgentFunction(
-        "testFunction",
-        "A test function",
-        inputSchema,
-        mockFn,
-      );
+      const agentFunction = new AgentFunction({
+        name: "testFunction",
+        description: "A test function",
+        schema: inputSchema,
+        fn: mockFn,
+      });
       await expect(agentFunction.run(validInput)).resolves.toEqual(output);
     });
 
     it("should throw an error for invalid input", async () => {
-      const agentFunction = new AgentFunction(
-        "testFunction",
-        "A test function",
-        inputSchema,
-        mockFn,
-      );
+      const agentFunction = new AgentFunction({
+        name: "testFunction",
+        description: "A test function",
+        schema: inputSchema,
+        fn: mockFn,
+      });
       await expect(agentFunction.run(invalidInput as unknown as Input)).rejects
         .toThrow(Error);
     });
@@ -94,12 +91,12 @@ describe("AgentFunction", () => {
       const failingFn: AgentFn<Input, Output> = async () => {
         throw new Error("Function failed");
       };
-      const agentFunction = new AgentFunction(
-        "testFunction",
-        "A test function",
-        inputSchema,
-        failingFn,
-      );
+      const agentFunction = new AgentFunction({
+        name: "testFunction",
+        description: "A test function",
+        schema: inputSchema,
+        fn: failingFn,
+      });
       await expect(agentFunction.run(validInput)).rejects.toThrow(Error);
     });
   });
