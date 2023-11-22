@@ -9,7 +9,7 @@ functions in your Delphi projects.
 
 - **Custom Functions:** You can define custom functions tailored to your
   specific needs. These functions can perform various tasks like fetching data
-  from an API, processing user input, or carrying out computations.
+  from an API, processing input, or carrying out computations.
 - **Schema Validation:** Delphi uses JSON schemas to validate the inputs of
   these functions, ensuring data integrity and correctness.
 
@@ -23,6 +23,9 @@ functions in your Delphi projects.
   const myFunction = new AgentFunction(/* ... configuration ... */);
   context.addFunction(myFunction, true); // second argument is whether to enable immediately
   ```
+
+  > For more information on the `AgentFunction` class, see the
+  > [API reference](./api/agent_function.md).
 
 ## Enabling And Disabling Functions
 
@@ -77,7 +80,7 @@ const weatherSchema: JSONSchemaType<WeatherParameters> = {
     location: {
       type: "string",
       description:
-        "The location to fetch weather information for (e.g. 'New York, NY').",
+        "The location to fetch weather information for (e.g. 'The Hague, NL')",
     },
   },
   required: ["location"],

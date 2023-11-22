@@ -16,6 +16,8 @@ application scenarios.
 
 - [Agent Functions](agent_functions.md); Learn how to use agent functions to
   enhance your agent's capabilities.
+- [Client Function](client.md); Learn how to use the client function to
+  integrate your agent with a message provider.
 
 ## Examples
 
