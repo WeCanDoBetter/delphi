@@ -12,6 +12,8 @@ application scenarios.
 > [open an issue](https://github.com/WeCanDoBetter/delphi/issues/new) and help
 > us improve the framework!
 
+![Delphi](./images/delphi.png)
+
 ## Guides
 
 - [Agent Functions](agent_functions.md); Learn how to use agent functions to
