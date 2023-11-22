@@ -26,7 +26,7 @@ describe("Agent", () => {
       .mockResolvedValueOnce({ content: "response 3", role: "system" });
 
     const messages: ChatMessage[] = [];
-    for await (const message of agent.run(mockContext)) {
+    for await (const { message } of agent.run(mockContext)) {
       messages.push(message);
     }
 
@@ -53,7 +53,11 @@ describe("Agent", () => {
     abortController.abort();
 
     const { value, done } = await messagePromise;
-    expect(value).toEqual({ content: "response", role: "system" });
+    expect(value).toEqual({
+      done: true,
+      message: { content: "response", role: "system" },
+      round: 1,
+    });
     expect(done).toBe(false);
     expect(mockClientFunction).toHaveBeenCalledTimes(1);
   });
@@ -68,7 +72,7 @@ describe("Agent", () => {
       .mockResolvedValueOnce({ content: "data", role: "function" });
 
     const messages: ChatMessage[] = [];
-    for await (const message of agent.run(mockContext)) {
+    for await (const { message } of agent.run(mockContext)) {
       messages.push(message);
     }
 

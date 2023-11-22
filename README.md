@@ -76,7 +76,7 @@ To quickly get started with Delphi:
 
 4. **Run the Agent:** Start the agent with the initialized context.
    ```typescript
-   for (const message of agent.run(context)) {
+   for (const { message } of agent.run(context)) {
      console.log(message.content); // "Sure, how can I help?"
    }
    ```

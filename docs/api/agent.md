@@ -54,6 +54,25 @@ Configuration options for an `Agent`.
 
 A type representing required fields from `AgentOptions`.
 
+### `RunOptions`
+
+Configuration options for running an agent.
+
+| Property    | Type          | Description                     |
+| ----------- | ------------- | ------------------------------- |
+| `signal`    | `AbortSignal` | Signal for aborting the run     |
+| `maxRounds` | `number`      | Maximum number of rounds to run |
+
+### `RunResult`
+
+A type representing the result of running an agent.
+
+| Property  | Type          | Description                   |
+| --------- | ------------- | ----------------------------- |
+| `round`   | `number`      | The round number              |
+| `message` | `ChatMessage` | The message sent by the agent |
+| `done`    | `boolean`     | Whether the agent is done     |
+
 ## Class `Agent`
 
 A class representing an agent used to run conversations.
@@ -89,16 +108,17 @@ Initializes a new instance of `Agent`.
 Runs the agent with a given context.
 
 ```typescript
-async* run(context: Context): AsyncIterableIterator<ChatMessage>
+async* run(context: Context, options: RunOptions): AsyncIterableIterator<ChatMessage>
 ```
 
 _Parameters_:
 
-| Parameter | Type      | Description                        |
-| --------- | --------- | ---------------------------------- |
-| `context` | `Context` | The context to run the agent with. |
+| Parameter | Type         | Description                                  |
+| --------- | ------------ | -------------------------------------------- |
+| `context` | `Context`    | The context to run the agent with.           |
+| `options` | `RunOptions` | Configuration options for running the agent. |
 
-_Returns_: `AsyncIterableIterator<ChatMessage>` - An iterator of chat messages.
+_Returns_: `AsyncIterableIterator<RunResult>` - An iterator of run results.
 
 ### Error Handling
 

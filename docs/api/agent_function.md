@@ -51,27 +51,13 @@ Initializes a new instance of `AgentFunction`.
 
 ### Methods
 
-#### `validate`
-
-Validates the input against the defined schema.
-
-> **Note:** This method is called automatically by `run`. You do not need to
-> call it manually.
-
-```typescript
-async validate(value: unknown): value is Input
-```
-
-- **Parameters**: `value: unknown` - The input to validate.
-- **Returns**: `Promise<Input>` - The validated input.
-- **Throws**: `AggregateError` if the input is invalid.
-
 #### `run`
 
 Executes the function with validated input.
 
-> **Note:** This method validates the input before executing the function. You
-> do not need to call `validate` before calling `run`.
+> **Note:** This method validates the input before executing the function. If
+> the input is invalid, an `AggregateError` is thrown containing all validation
+> errors.
 
 ```typescript
 async run(value: Input): Promise<Output>

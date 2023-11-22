@@ -31,7 +31,7 @@ export class AgentFunction<Input, Output> {
   /** The schema of the function input. */
   readonly schema: JSONSchemaType<Input>;
 
-  #validate?: ValidateFunction<Input>;
+  #validate: ValidateFunction<Input>;
   #fn: AgentFn<Input, Output>;
 
   constructor(options: AgentFunctionOptions<Input, Output>) {
@@ -41,25 +41,7 @@ export class AgentFunction<Input, Output> {
     this.description = description;
     this.schema = schema;
     this.#fn = fn;
-  }
-
-  /**
-   * Validate the input. This will compile the schema if it has not already
-   * been compiled.
-   *
-   * **Note**: This does not need to be called before calling `run`. It is
-   * called automatically.
-   * @param value The input to validate.
-   * @throws {AggregateError} If the input is invalid.
-   */
-  validate(value: unknown) {
-    if (!this.#validate) {
-      this.#validate = ajv.compile(this.schema);
-    }
-
-    if (!this.#validate(value)) {
-      throw new ValidationError(this.#validate.errors ?? []);
-    }
+    this.#validate = ajv.compile(this.schema);
   }
 
   /**
@@ -69,8 +51,10 @@ export class AgentFunction<Input, Output> {
    * @throws {AggregateError} If the input is invalid.
    * @throws {AggregateError} If the function throws an error.
    */
-  async run(value: Input): Promise<Output> {
-    this.validate(value);
+  async run(value: unknown): Promise<Output> {
+    if (!this.#validate(value)) {
+      throw new ValidationError(this.#validate.errors ?? []);
+    }
 
     try {
       return await this.#fn(value);

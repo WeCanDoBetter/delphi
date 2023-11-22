@@ -41,29 +41,6 @@ describe("AgentFunction", () => {
     expect(agentFunction.schema).toBe(inputSchema);
   });
 
-  // Test validate method
-  describe("validate", () => {
-    it("should validate correct input", async () => {
-      const agentFunction = new AgentFunction({
-        name: "testFunction",
-        description: "A test function",
-        schema: inputSchema,
-        fn: mockFn,
-      });
-      expect(agentFunction.validate(validInput)).toBeUndefined();
-    });
-
-    it("should throw an error for invalid input", async () => {
-      const agentFunction = new AgentFunction({
-        name: "testFunction",
-        description: "A test function",
-        schema: inputSchema,
-        fn: mockFn,
-      });
-      expect(agentFunction.validate(invalidInput)).toThrow(Error);
-    });
-  });
-
   // Test run method
   describe("run", () => {
     it("should run successfully with valid input", async () => {

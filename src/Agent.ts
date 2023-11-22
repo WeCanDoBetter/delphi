@@ -29,6 +29,17 @@ export interface AgentOptions {
 export interface RunOptions {
   /** The abort signal. */
   signal?: AbortSignal;
+  /** The maximum number of rounds to run the agent. */
+  maxRounds?: number;
+}
+
+export interface RunResult {
+  /** The round. */
+  round: number;
+  /** The message. */
+  message: ChatMessage;
+  /** Whether the agent is done. */
+  done: boolean;
 }
 
 /** The default agent options. */
@@ -76,25 +87,27 @@ export class Agent extends EventTarget {
    * @param context The context to run the agent with.
    * @param options The options to run the agent with.
    * @param options.signal The abort signal.
+   * @param options.maxRounds The maximum number of rounds to run the agent.
    * @returns The result of the agent.
    */
   async *run(
     context: Context,
-    { signal }: RunOptions = {},
-  ): AsyncIterableIterator<ChatMessage> {
+    { signal, maxRounds = this.options.maxRounds! }: RunOptions = {},
+  ): AsyncIterableIterator<RunResult> {
     const runRound = async (round: number): Promise<ChatMessage> => {
       const { messages, functions } = context.build();
-      const isLastRound = round >= this.options.maxRounds!;
+      const isLastRound = round >= maxRounds!;
+      const includeFunctions = !isLastRound && functions.length;
 
       return this.#client(messages, {
         ...this.options.client,
-        functionCall: isLastRound || !functions.length ? "none" : "auto",
-        functions: isLastRound || !functions.length ? undefined : functions,
+        functionCall: includeFunctions ? "auto" : "none",
+        functions: includeFunctions ? undefined : functions,
       });
     };
 
     // Loop through the rounds, until the maximum number of rounds is reached
-    for (let round = 1; round <= this.options.maxRounds!; round++) {
+    for (let round = 1; round <= maxRounds; round++) {
       if (signal?.aborted) {
         // Abort the agent
         break;
@@ -107,17 +120,32 @@ export class Agent extends EventTarget {
       context.addMessage(message);
 
       // Yield the message
-      yield message;
+      yield {
+        round,
+        message,
+        done: !message.functionCall,
+      };
+
+      // Check again before processing the possible function call
+      // This allows the agent to be aborted before processing the function
+      if (signal?.aborted) {
+        // Abort the agent
+        break;
+      }
 
       // Process the function call
-      const response = await this.#processFunctionCall(context, message);
+      const result = await this.#processFunctionCall(context, message);
 
-      if (response) {
+      if (result) {
         // Add the function result to the context
-        context.addMessage(response);
+        context.addMessage(result);
 
         // Yield the function result
-        yield response;
+        yield {
+          round,
+          message: result,
+          done: false,
+        };
       }
     }
   }

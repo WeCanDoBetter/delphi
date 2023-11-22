@@ -191,8 +191,8 @@ Now we can run the agent with the context. The agent will use the functions
 defined in the context to process the messages.
 
 ```ts
-for (const message of agent.run(context)) {
-  console.log(message.content);
+for (const { message } of agent.run(context)) {
+  console.log(message);
 }
 ```
 
