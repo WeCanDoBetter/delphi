@@ -18,7 +18,7 @@ const credential = new OpenAIKeyCredential(/* your key */);
 const client = new OpenAIClient(credential);
 
 // Define the client function
-const clientFn: ClientFunction = async (messages, options) => {
+const clientFn: ClientFunction = async (messages, { model, ...options }) => {
   const response = client.getChatCompletions(options.model, messages, options);
   return response.choices[0].message!;
 };

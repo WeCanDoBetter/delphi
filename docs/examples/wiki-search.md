@@ -147,12 +147,13 @@ const client = new OpenAIClient(new OpenAIKeyCredential("<API_KEY>"));
 // Create the agent
 const agent = new Agent(
   "wiki",
-  async (messages, options) => {
-    const response = await client.getChatCompletions(
+  async (messages, { model, ...options }) => {
+    const response = client.getChatCompletions(
       options.model,
       messages,
       options,
     );
+
     return response.choices[0].message!;
   },
   {
