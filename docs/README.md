@@ -12,7 +12,7 @@ application scenarios.
 > [open an issue](https://github.com/WeCanDoBetter/delphi/issues/new) and help
 > us improve the framework!
 
-![Delphi](./images/delphi.png)
+[![Delphi](./images/delphi.png)]](./DELPHI.md)
 
 ## Guides
 
@@ -33,6 +33,10 @@ application scenarios.
 - [Agent Function](./api/agent_function.md)
 - [Context](./api/context.md)
 - [Function Map](./api/function_map.md)
+
+## See Also
+
+- [Delphi](./DELPHI.md); Who is this Delphi, anyway?
 
 You can help improve these docs by opening an issue or pull request on the
 [Delphi GitHub repository](https://github.com/WeCanDoBetter/delphi).
