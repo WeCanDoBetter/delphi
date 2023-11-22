@@ -1,7 +1,7 @@
 import type { BaseClientOptions, ChatMessage } from "./types";
 import type { Context } from "./Context";
 
-interface ClientOptions extends BaseClientOptions {
+export interface ClientOptions extends BaseClientOptions {
   /** The model to use. */
   model: string;
 }
@@ -174,13 +174,11 @@ export class Agent extends EventTarget {
       throw new AggregateError([error], "Failed to run function.");
     }
 
-    // Create the function result
-    const result: ChatMessage = {
+    // Return the function result message
+    return {
       role: "function",
       name: functionCall.name,
       content: typeof value === "string" ? value : JSON.stringify(value),
     };
-
-    return result;
   }
 }

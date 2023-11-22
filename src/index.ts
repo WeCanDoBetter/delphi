@@ -5,10 +5,15 @@ export type {
   JSONSchemaType,
 } from "./types";
 
-export { Agent, type AgentOptions, type ClientFunction } from "./Agent";
+export {
+  Agent,
+  type AgentOptions,
+  type ClientFunction,
+  type ClientOptions,
+} from "./Agent";
 
 export { type AgentFn, AgentFunction } from "./AgentFunction";
 
-export { type BuiltContext, Context } from "./Context";
+export { type BuiltContext, Context, type ContextOptions } from "./Context";
 
 export { FunctionMap } from "./FunctionMap";

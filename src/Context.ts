@@ -1,6 +1,6 @@
 import type { ChatMessage, FunctionDefinition } from "./types";
 import { FunctionMap } from "./FunctionMap";
-import type { AgentFunction } from "./AgentFunction";
+import { AgentFunction } from "./AgentFunction";
 
 /**
  * A built context. This can be used with the OpenAI API.
@@ -66,11 +66,20 @@ export class Context {
    * @throws {Error} If a function with the same name already exists.
    */
   addFunction<Input, Output>(fn: AgentFunction<Input, Output>, enabled = true) {
-    if (this.#functions.has(fn.name)) {
-      throw new Error(`Function "${fn.name}" already exists.`);
-    }
-
     this.#functions.addFunction(fn, enabled);
+  }
+
+  /**
+   * Add multiple functions to the context.
+   * @param fns The functions to add.
+   */
+  addFunctions<Input, Output>(
+    ...fns: (AgentFunction<Input, Output> | {
+      fn: AgentFunction<Input, Output>;
+      enabled?: boolean;
+    })[]
+  ) {
+    this.#functions.addFunctions(...fns);
   }
 
   /**
