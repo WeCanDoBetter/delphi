@@ -1,4 +1,4 @@
-import type { BaseClientOptions, ChatMessage } from "./types";
+import type { BaseClientOptions, ChatMessage, FunctionCall } from "./types";
 import type { Context } from "./Context";
 
 export interface ClientOptions extends BaseClientOptions {
@@ -42,17 +42,25 @@ export interface RunResult {
   done: boolean;
 }
 
-/** The default agent options. */
-type DefaultAgentOptions = Required<
-  Omit<AgentOptions, "model" | "description" | "client">
+/** The required agent options. */
+type RequiredAgentOptions = Required<
+  Omit<AgentOptions, "description" | "client">
 >;
+
+/** The agent options with the required options. */
+type InstanceAgentOptions = RequiredAgentOptions & {
+  /** The description of the agent. */
+  description?: string;
+  /** The client options. */
+  client: ClientOptions;
+};
 
 /**
  * An agent. This is used to run an agent.
  */
-export class Agent extends EventTarget {
+export class Agent {
   /** The default agent options. */
-  static DEFAULT_OPTIONS: DefaultAgentOptions = {
+  static DEFAULT_OPTIONS: RequiredAgentOptions = {
     maxRounds: 5,
   };
 
@@ -61,12 +69,11 @@ export class Agent extends EventTarget {
   /** The description of the agent. */
   readonly description?: string;
   /** The options of the agent. */
-  readonly options: AgentOptions;
+  readonly options: InstanceAgentOptions;
 
   #client: ClientFunction;
 
   constructor(name: string, client: ClientFunction, options: AgentOptions) {
-    super();
     this.name = name;
     this.#client = client;
 
@@ -92,7 +99,7 @@ export class Agent extends EventTarget {
    */
   async *run(
     context: Context,
-    { signal, maxRounds = this.options.maxRounds! }: RunOptions = {},
+    { signal, maxRounds = this.options.maxRounds }: RunOptions = {},
   ): AsyncIterableIterator<RunResult> {
     const runRound = async (round: number): Promise<ChatMessage> => {
       const { messages, functions } = context.build();
@@ -133,10 +140,12 @@ export class Agent extends EventTarget {
         break;
       }
 
-      // Process the function call
-      const result = await this.#processFunctionCall(context, message);
+      const { functionCall } = message;
 
-      if (result) {
+      if (functionCall) {
+        // Process the function call
+        const result = await this.#processFunctionCall(context, functionCall);
+
         // Add the function result to the context
         context.addMessage(result);
 
@@ -152,27 +161,18 @@ export class Agent extends EventTarget {
 
   /**
    * Process a function call. This will run the function and add the result to
-   * the context. If there is no function call, this will do nothing.
+   * the context.
    * @param context The context to process the function call with.
-   * @param message The message to process the function call with.
-   * @returns Whether the function call was processed. If so, the agent should
-   * be called again, so it can process the function result. If not, message
-   * is not a function call.
+   * @param functionCall The function call to process.
+   * @returns The function result message.
    * @throws {Error} If the function does not exist or is not enabled.
    * @throws {AggregateError} If the function arguments are invalid or the
    * function throws an error.
    */
   async #processFunctionCall(
     context: Context,
-    message: ChatMessage,
-  ): Promise<ChatMessage | null> {
-    const { functionCall } = message;
-
-    if (!functionCall) {
-      return null;
-    }
-
-    // Get the function
+    functionCall: FunctionCall,
+  ): Promise<ChatMessage> {
     const fn = context.functions.get(functionCall.name);
 
     if (!fn) {
