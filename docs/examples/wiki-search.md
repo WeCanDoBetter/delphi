@@ -149,7 +149,7 @@ const agent = new Agent(
   "wiki",
   async (messages, { model, ...options }) => {
     const response = client.getChatCompletions(
-      options.model,
+      model,
       messages,
       options,
     );

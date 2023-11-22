@@ -19,7 +19,7 @@ const client = new OpenAIClient(credential);
 
 // Define the client function
 const clientFn: ClientFunction = async (messages, { model, ...options }) => {
-  const response = client.getChatCompletions(options.model, messages, options);
+  const response = client.getChatCompletions(model, messages, options);
   return response.choices[0].message!;
 };
 
