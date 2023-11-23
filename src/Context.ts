@@ -60,6 +60,22 @@ export class Context {
   }
 
   /**
+   * Replace a message in the context.
+   * @param original The message to replace.
+   * @param replacement The message to replace it with.
+   * @throws {Error} If the message to replace is not found in the context.
+   */
+  replaceMessage(original: ChatMessage, replacement: ChatMessage) {
+    const index = this.#messages.indexOf(original);
+
+    if (index === -1) {
+      throw new Error("Message not found in context");
+    }
+
+    this.#messages[index] = replacement;
+  }
+
+  /**
    * Add a function to the context.
    * @param fn The function to add.
    * @param enabled Whether to enable the function (default: `true`).
