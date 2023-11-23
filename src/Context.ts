@@ -70,6 +70,34 @@ export class Context {
   }
 
   /**
+   * Add a message at a specific index in the context.
+   * @param index The index to add the message at.
+   * @param message The message to add.
+   * @throws {RangeError} If the index is out of range.
+   */
+  addMessageAt(index: number, message: ChatMessage) {
+    if (index < 0 || index > this.#messages.length) {
+      throw new RangeError("Index out of range");
+    }
+
+    this.#messages.splice(index, 0, message);
+  }
+
+  /**
+   * Add multiple messages at a specific index in the context.
+   * @param index The index to add the messages at.
+   * @param messages The messages to add.
+   * @throws {RangeError} If the index is out of range.
+   */
+  addMessagesAt(index: number, ...messages: ChatMessage[]) {
+    if (index < 0 || index > this.#messages.length) {
+      throw new RangeError("Index out of range");
+    }
+
+    this.#messages.splice(index, 0, ...messages);
+  }
+
+  /**
    * Replace a message in the context.
    * @param original The message to replace.
    * @param replacement The message to replace it with.
