@@ -153,7 +153,7 @@ export class Context {
    */
   duplicate(): Context {
     return new Context({
-      messages: [...this.#messages],
+      messages: [...this.#messages].map((message) => structuredClone(message)),
       functions: this.#functions.values(),
     });
   }
