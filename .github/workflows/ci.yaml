@@ -1,4 +1,4 @@
-name: Code Coverage
+name: Test and Coverage
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x,20.x]
+        node-version: [18.x,20.x, 21.x]
 
     steps:
     - name: Checkout repository
@@ -29,3 +29,6 @@ jobs:
 
     - name: Run the tests
       run: npm run test:coverage
+
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1
