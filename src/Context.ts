@@ -60,6 +60,16 @@ export class Context {
   }
 
   /**
+   * Add multiple messages to the context.
+   * @param messages The messages to add.
+   */
+  addMessages(...messages: ChatMessage[]) {
+    for (const message of messages) {
+      this.addMessage(message);
+    }
+  }
+
+  /**
    * Replace a message in the context.
    * @param original The message to replace.
    * @param replacement The message to replace it with.
