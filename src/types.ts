@@ -1,7 +1,9 @@
 import type { GetChatCompletionsOptions } from "@azure/openai";
+import type { ChatRequestMessage, ChatResponseMessage } from "@azure/openai";
 
 export type {
-  ChatMessage,
+  ChatRequestMessage,
+  ChatResponseMessage,
   FunctionCall,
   FunctionDefinition,
 } from "@azure/openai";
@@ -13,3 +15,4 @@ export type BaseClientOptions = Omit<
 >;
 
 export type { JSONSchemaType } from "ajv";
+export type ChatMessage = ChatRequestMessage | ChatResponseMessage;

@@ -1,4 +1,9 @@
-import type { BaseClientOptions, ChatMessage, FunctionCall } from "./types";
+import type {
+  BaseClientOptions,
+  ChatMessage,
+  ChatResponseMessage,
+  FunctionCall,
+} from "./types";
 import type { Context } from "./Context";
 
 export interface ClientOptions extends BaseClientOptions {
@@ -130,7 +135,7 @@ export class Agent {
       yield {
         round,
         message,
-        done: !message.functionCall,
+        done: !(message as ChatResponseMessage).functionCall,
       };
 
       // Check again before processing the possible function call
@@ -140,7 +145,7 @@ export class Agent {
         break;
       }
 
-      const { functionCall } = message;
+      const { functionCall } = message as ChatResponseMessage;
 
       if (functionCall) {
         // Process the function call
